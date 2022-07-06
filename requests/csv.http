@@ -1,0 +1,7 @@
+GET http://localhost:8080/info HTTP/1.1
+
+###
+GET http://localhost:8080/upload-csv?url=C:/Users/david/Documents/proyects/PromocionBD2/tmp/US_Accidents_Dec19_short-10.csv HTTP/1.1
+
+###
+GET http://localhost:8080/upload-csv?url=C:/Users/david/Documents/proyects/PromocionBD2/tmp/prueba.csv HTTP/1.1
