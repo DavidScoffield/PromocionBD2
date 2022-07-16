@@ -1,15 +1,18 @@
 package ar.edu.unlp.info.bd2.promocionbd2.controllers;
 
-import ar.edu.unlp.info.bd2.promocionbd2.entity.Accident;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.SummarizedAccidentRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import ar.edu.unlp.info.bd2.promocionbd2.services.AccidentServiceImplementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Point;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -55,6 +58,41 @@ public class AccidentController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping(value = "accidents/average-distance", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getAverageDistance() {
+        Double distance = accidentService.getAverageDistance();
+
+        return ResponseEntity.status(HttpStatus.OK).body("{'averageDistance': " + distance + "}");
+    }
+
+    // TODO check parameters
+    /*@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getMostDangerousPoints(
+            @RequestParam(value = "radius") Double radius,
+            @RequestParam(value = "amount", required = false) Integer amount
+    ) {
+        List<Point> dangerousPoints;
+        if (amount == null) {
+            dangerousPoints = accidentService.getMostDangerousPoints(radius, 5);
+        } else {
+            dangerousPoints = accidentService.getMostDangerousPoints(radius, amount);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(dangerousPoints);
+    }*/
+
+    @GetMapping(value = "accidents/dangerous-streets", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getFiveStreetsWithMostAccidents() {
+        List<String> streets = accidentService.getFiveStreetsWithMostAccidents();
+        return ResponseEntity.status(HttpStatus.OK).body(streets);
+    }
+
+    @GetMapping(value = "accidents/near/average-distance")
+    public ResponseEntity getAverageDistanceToCloseAccidents() {
+        List<SummarizedAccidentRepresentation> accidents = accidentService.getAverageDistanceToCloseAccidents();
+        return ResponseEntity.status(HttpStatus.OK).body(accidents);
     }
 
 }

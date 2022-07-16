@@ -19,7 +19,18 @@ GET http://localhost:8080/accidents/between-dates?start=2016-02-08&end=2016-02-0
 
 GET http://localhost:8080/accidents/near?longitude=-84.058723&latitude=39.865147&radius=10 HTTP/1.1
 
-
-// TODO delete
 ###
-GET http://localhost:8080/upload-csv?url=C:/Users/david/Documents/proyects/PromocionBD2/tmp/prueba.csv HTTP/1.1
+// Retorna la distancia promedio (en metros) desde el inicio al fin del accidente
+
+GET http://localhost:8080/accidents/average-distance HTTP/1.1
+
+###
+// Retorna las 5 calles con mas accidentes
+
+GET http://localhost:8080/accidents/dangerous-streets HTTP/1.1
+
+
+###
+// Chequear performance
+
+GET http://localhost:8080/accidents/near/average-distance HTTP/1.1

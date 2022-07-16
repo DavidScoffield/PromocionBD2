@@ -1,4 +1,4 @@
-package ar.edu.unlp.info.bd2.promocionbd2.entity;
+package ar.edu.unlp.info.bd2.promocionbd2.model;
 
 import ar.edu.unlp.info.bd2.promocionbd2.beans.CsvBean;
 import com.opencsv.bean.CsvBindByName;
