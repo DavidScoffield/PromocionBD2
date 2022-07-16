@@ -15,12 +15,13 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+/*TODO delete class*/
 @Service
 public class StudentService {
-    @Autowired
+    //@Autowired
     CourseRepository courseRepository;
 
-    @Autowired
+   // @Autowired
     StudentRepository studentRepository;
 
     @Transactional

@@ -1,29 +1,33 @@
 package ar.edu.unlp.info.bd2.promocionbd2.services;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import ar.edu.unlp.info.bd2.promocionbd2.entity.Accident;
+
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+public interface AccidentService {
 
-import ar.edu.unlp.info.bd2.promocionbd2.beans.AccidentBean;
-import ar.edu.unlp.info.bd2.promocionbd2.beans.CsvBean;
-import ar.edu.unlp.info.bd2.promocionbd2.utils.CsvHelper;
+    /**
+     * Parsea el CSV y almacena la informacion en las bases de datos.
+     * @param path la ruta donde se encuentra guardado el CSV de Accidentes
+     * */
+    public void uploadCSV(String path) throws IOException;
 
-@Service
-public class AccidentService {
+    /**
+     * Retorna los accidentes ocurridos entre dos fechas
+     * @param start Fecha de comienzo del intervalo
+     * @param end Fecha de fin del intervalo
+     * @return lista de Accident
+     */
+    public List<Accident> getAccidentsBetweenDates(String start, String end) throws ParseException;
 
-  // @Autowired
-  // private CsvHelper csvHelper;
-
-  public String uploadCSV(String url) throws Exception {
-    Path path = Paths.get(url);
-    List<CsvBean> dataList = CsvHelper.beanBuilderExample(path, AccidentBean.class);
-
-    // TODO: Save data in both databases
-
-    return "EXITO";
-  }
-
+    /**
+     * Retorna los accidentes ocurridos a cierta distancia de un punto geografico
+     * @param longitude Coordenada correspondiente a la longitud del punto geografico
+     * @param latitude Coordenada correspondiente a la latitud del punto geografico
+     * @param radius Radio de busqueda
+     * @return lista de Accident
+     */
+    public List<Accident> getAccidentsNearLocation(Double longitude, Double latitude, Double radius) throws Exception;
 }

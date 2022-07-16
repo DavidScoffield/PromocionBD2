@@ -11,6 +11,8 @@ import ar.edu.unlp.info.bd2.promocionbd2.services.StudentService;
 
 import java.util.List;
 
+/*TODO delete this class*/
+
 @RestController
 public class StudentController {
 
