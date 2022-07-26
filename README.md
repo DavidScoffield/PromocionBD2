@@ -28,7 +28,9 @@ db.accident.updateMany({}, [
 
 ```
 
-(in my case it took 19s) 3. Run the following command to create a 2dsphere index
+(in my case it took 19s)
+
+3. Run the following command to create a 2dsphere index
 
 ```
 db.accident.createIndex({location: "2dsphere"})
