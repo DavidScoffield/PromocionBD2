@@ -37,7 +37,7 @@ public interface AccidentService {
      * Retorna la distancia promedio desde el inicio al fin del accidente
      * @return distancia promedio
      */
-    public Double getAverageDistance();
+    HashMap<String, Object> getAverageDistance();
 
     /**
      * Retorna los n puntos más peligrosos dentro de un determinado radio

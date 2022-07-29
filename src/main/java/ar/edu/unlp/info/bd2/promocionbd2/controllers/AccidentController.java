@@ -62,9 +62,7 @@ public class AccidentController {
 
     @GetMapping(value = "accidents/average-distance", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAverageDistance() {
-        Double distance = accidentService.getAverageDistance();
-
-        return ResponseEntity.status(HttpStatus.OK).body("{'averageDistance': " + distance + "}");
+        return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAverageDistance());
     }
 
     // TODO check parameters

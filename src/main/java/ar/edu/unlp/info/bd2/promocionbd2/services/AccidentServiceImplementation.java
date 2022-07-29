@@ -76,10 +76,18 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
-    public Double getAverageDistance() {
-        // Retorna la distancia en metros
+    public HashMap<String, Object> getAverageDistance() {
+        HashMap<String, Object> result = new HashMap<>();
 
-        return (postgresAccidentRepository.getAverageDistance() * 1609.34);
+        try {
+            // Retorna la distancia en metros
+            Double distance = postgresAccidentRepository.getAverageDistance() * 1609.34;
+            result.put("averageDistance", distance);
+        } catch (NullPointerException e) {
+            result.put("averageDistance", "No distance found");
+        }
+        
+        return result;
     }
 
     /*TODO check parameters*/
