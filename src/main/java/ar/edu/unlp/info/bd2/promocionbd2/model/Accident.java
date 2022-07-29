@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.Column;
+import javax.persistence.Transient;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -268,5 +269,6 @@ public class Accident extends CsvBean {
     @CsvBindByName(column = "Astronomical_Twilight")
     private String astronomicalTwilight;
 
+    @Transient
     private @GeoSpatialIndexed Point location;
 }

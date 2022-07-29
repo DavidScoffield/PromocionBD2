@@ -95,4 +95,9 @@ public class AccidentController {
         return ResponseEntity.status(HttpStatus.OK).body(accidents);
     }
 
+    @GetMapping(value = "accidents/getCommonConditions", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getCommonAccidentConditions() {
+        return ResponseEntity.status(HttpStatus.OK).body(accidentService.getCommonAccidentConditions());
+    }
+
 }

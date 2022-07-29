@@ -7,7 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +26,7 @@ import ar.edu.unlp.info.bd2.promocionbd2.beans.CsvBean;
 import ar.edu.unlp.info.bd2.promocionbd2.utils.CsvHelper;
 
 @Service
-public class AccidentServiceImplementation implements AccidentService{
+public class AccidentServiceImplementation implements AccidentService {
 
     @Autowired
     private PostgresAccidentRepository postgresAccidentRepository;
@@ -102,5 +102,16 @@ public class AccidentServiceImplementation implements AccidentService{
         return mongoAccidentRepository.getAverageDistanceToNearAccidents(accidentStream);
     }
 
+    public HashMap<String, Object> getCommonAccidentConditions() {
+        Pageable pageable = PageRequest.of(0, 1);
+        String weatherCondition = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable).getContent().get(0);
+        int startHour = postgresAccidentRepository.getCommonAccidentStartHour(pageable).getContent().get(0);
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("commonAccidentWeatherCondition", weatherCondition);
+        result.put("commonAccidentStartHour", startHour);
+
+        return result;
+    }
 
 }

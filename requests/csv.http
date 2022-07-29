@@ -34,3 +34,7 @@ GET http://localhost:8080/accidents/dangerous-streets HTTP/1.1
 // Chequear performance
 
 GET http://localhost:8080/accidents/near/average-distance HTTP/1.1
+
+###
+// Retorna las condiciones más comunes en los accidentes
+GET http://localhost:8080/accidents/getCommonConditions HTTP/1.1

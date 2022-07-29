@@ -5,6 +5,7 @@ import org.springframework.data.geo.Point;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 
 public interface AccidentService {
@@ -52,4 +53,10 @@ public interface AccidentService {
      * @return lista de String
      */
     public List<String> getFiveStreetsWithMostAccidents();
+
+    /**
+     * Retorna las condiciones más comunes en los accidentes
+     * @return un HashMap con las claves "commonAccidentWeatherCondition" (la condición climática más común) y "commonAccidentStartHour" (la hora de comienzo más común)
+     */
+    HashMap<String, Object> getCommonAccidentConditions();
 }
