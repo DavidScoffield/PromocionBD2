@@ -4,11 +4,7 @@
 # tail -n +2 /resources/tmp/US_Accidents_Dec19.csv > /resources/tmp/US_Accidents_Dec19-without_header.csv
 
 echo "------------ |X| Importing data into MongoDB |X| ------------"
-# With field types
+
 mongoimport --username=root --password=password --port=27017 --authenticationDatabase "admin" --db database --collection accident --type=csv --drop --parseGrace=autoCast --columnsHaveTypes --fieldFile=/docker-entrypoint-initdb.d/fieldsNamesCsv.txt --file=/csv/US_Accidents_Dec19-copia.csv
 
 echo "------------ |X| Successfully importation |X| ------------"
-# Without field types
-# mongoimport --username=root --password=password --port=27017 --authenticationDatabase "admin" --db database --collection accident --type=csv --drop --headerline --file=/resources/tmp/US_Accidents_Dec19.csv
-
-# mongosh --username=root --password=password </resources/mongo/2_createIndexes.js
