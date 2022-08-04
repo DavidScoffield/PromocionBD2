@@ -16,6 +16,15 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
       POSTGRES_DB: database
+      NAME_CSV_FILE: $NAME_CSV_FILE
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 1234:8080
+    depends_on:
+      - postgres
 
   # pgadmin:
   #   image: dpage/pgadmin4
@@ -29,14 +38,6 @@ services:
   #     - 5050:80
   #   depends_on:
   #     - postgres
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 1234:8080
-    depends_on:
-      - postgres
 
   mongo:
     image: mongo:5.0.8
@@ -52,6 +53,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: database
+      NAME_CSV_FILE: $NAME_CSV_FILE
 
   mongo-express:
     image: mongo-express
