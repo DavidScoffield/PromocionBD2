@@ -4,7 +4,31 @@
 
 1. Copiar US_Accident_Data.csv al directorio /initialization/csv
 
-2. Ejecutar
+2. Ingresar en el archivo .env, el nombre de archivo del csv sin la extensión.
+
+   > A continuacion se explican los valores de configuracion modificables en el archivo .env:
+
+   ```sh
+    # Postgres configuration
+    POSTGRES_DB : nombre de la base de datos de postgres
+    POSTGRES_USER : nombre de usuario de postgres
+    POSTGRES_PASSWORD : contraseña de postgres
+
+    # Mongo configuration
+    MONGO_DB : nombre de la base de datos de mongo
+    MONGO_USER : nombre de usuario de mongo
+    MONGO_PASSWORD : contraseña de mongo
+
+    # HOST PORTS
+    SERVER_HOST_PORT : puerto que se expondra en el host que corre el contenedor de la aplicacion
+    MONGO_HOST_PORT : puerto que se expondra en el host que corre el contener de mongo
+    POSTGRES_HOST_PORT : puerto que se expondra en el host que corre el contenedor de postgres
+
+    # CSV
+    NAME_CSV_FILE : nombre del archivo csv sin la extensión
+   ```
+
+3. Ejecutar
 
    ```
    docker-compose up -d
