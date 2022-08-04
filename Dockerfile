@@ -9,5 +9,5 @@ RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
 # run app
 COPY --from=build /usr/src/app/target/PromocionBD2-0.0.1-SNAPSHOT.jar /usr/app/app.jar
-# EXPOSE 8081
+EXPOSE 8000
 ENTRYPOINT ["java","-jar","/usr/app/app.jar"]

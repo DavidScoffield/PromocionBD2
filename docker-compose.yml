@@ -8,14 +8,13 @@ services:
     image: app
     restart: on-failure
     ports:
-      - $SERVER_HOST_PORT:8081
+      - $SERVER_HOST_PORT:8000
     depends_on:
       - mongodb
       - postgres
     environment:
-      SERVER_PORT: 8081
+      SERVER_PORT: 8000
       SPRING_PROFILES_ACTIVE: prod
-      # SPRING_APPLICATION_NAME: $APP_NAME
       # MongoDB
       SPRING_DATA_MONGODB_HOST: mongodb_host
       SPRING_DATA_MONGODB_USERNAME: $MONGO_USER
