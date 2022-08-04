@@ -7,7 +7,7 @@ services:
       - '5432:5432'
     restart: always
     volumes:
-      - bd-postgres:/var/lib/postgresql/data
+      - bd-postgres-dev:/var/lib/postgresql/data
       - ./initialization/postgres/init:/docker-entrypoint-initdb.d/
       - ./initialization/postgres/resources:/resources/init/
       - ./initialization/csv:/resources/csv/
@@ -45,7 +45,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - bd-mongo:/data/db
+      - bd-mongo-dev:/data/db
       - ./initialization/mongo/init:/docker-entrypoint-initdb.d/
       - ./initialization/mongo/resources:/resources/init/
       - ./initialization/csv:/resources/csv/
@@ -68,6 +68,6 @@ services:
       - mongo
 
 volumes:
-  bd-postgres:
-  bd-mongo:
+  bd-postgres-dev:
+  bd-mongo-dev:
   # pgadmin:
