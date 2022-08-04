@@ -55,7 +55,9 @@ services:
     restart: unless-stopped
     volumes:
       - bd-postgres:/var/lib/postgresql/data
-      # - ./resources:/resources
+      - ./initialization/postgres/init:/docker-entrypoint-initdb.d/
+      - ./initialization/csv:/resources/csv/
+      - ./initialization/postgres/resources:/resources/init/
     environment:
       POSTGRES_HOST_AUTH_METHOD: password
       POSTGRES_USER: root
