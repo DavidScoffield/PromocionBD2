@@ -11,4 +11,4 @@ echo "------------ |X| Successfully importation |X| ------------"
 
 mongo --quiet --username=root --password=password </resources/init/createIndexes.js
 
-echo "------------ |X| SUCCESSFULLY INITIALIZACION OF DATABASE |X| ------------"
+echo "------------ |X| SUCCESSFULLY INITIALIZACION MONGO DATABASE |X| ------------"
