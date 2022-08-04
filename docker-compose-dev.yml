@@ -8,7 +8,9 @@ services:
     restart: always
     volumes:
       - bd-postgres:/var/lib/postgresql/data
-      - ./resources:/resources
+      - ./initialization/postgres/init:/docker-entrypoint-initdb.d/
+      - ./initialization/postgres/resources:/resources/init/
+      - ./initialization/csv:/resources/csv/
     environment:
       POSTGRES_HOST_AUTH_METHOD: password
       POSTGRES_USER: root
@@ -43,7 +45,9 @@ services:
       - 27017:27017
     volumes:
       - bd-mongo:/data/db
-      - ./resources:/resources
+      - ./initialization/mongo/init:/docker-entrypoint-initdb.d/
+      - ./initialization/mongo/resources:/resources/init/
+      - ./initialization/csv:/resources/csv/
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
