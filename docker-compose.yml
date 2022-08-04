@@ -38,8 +38,8 @@ services:
     volumes:
       - bd-mongo:/data/db
       - ./initialization/mongo/init:/docker-entrypoint-initdb.d/
-      - ./initialization/csv:/resources/csv/
       - ./initialization/mongo/resources:/resources/init/
+      - ./initialization/csv:/resources/csv/
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
@@ -56,8 +56,8 @@ services:
     volumes:
       - bd-postgres:/var/lib/postgresql/data
       - ./initialization/postgres/init:/docker-entrypoint-initdb.d/
-      - ./initialization/csv:/resources/csv/
       - ./initialization/postgres/resources:/resources/init/
+      - ./initialization/csv:/resources/csv/
     environment:
       POSTGRES_HOST_AUTH_METHOD: password
       POSTGRES_USER: root

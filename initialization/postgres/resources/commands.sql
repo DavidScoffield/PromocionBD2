@@ -54,4 +54,4 @@ CREATE TABLE accident (
 );
 -- IMPORT DATA FROM CSV
 COPY accident
-FROM '/resources/tmp/US_Accidents_Dec19_short-199.csv' DELIMITER ',' CSV HEADER;
+FROM '/resources/csv/US_Accidents_Dec19_short-199.csv' DELIMITER ',' CSV HEADER;
