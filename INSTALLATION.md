@@ -4,11 +4,23 @@
 
 1. Copiar US_Accident_Data.csv al directorio /initialization/csv
 
-2. Ejecutar docker-compose up -d
+2. Ejecutar
 
-## 2. Cargar base de datos MANUALMENTE
+   ```
+   docker-compose up -d
+   ```
 
-### 2.1 Carga de la base de datos de _Mongo_
+## 2. Dar de baja ambiente
+
+1. Ejecutar
+
+   ```
+   docker-compose down
+   ```
+
+## 3. Cargar base de datos MANUALMENTE
+
+### 3.1 Carga de la base de datos de _Mongo_
 
 (con el contenedor de mongo iniciado)
 
@@ -18,7 +30,7 @@
 docker exec  -it {nombre_contenedor_mongo} bash /docker-entrypoint-initdb.d/mongoDataInit.sh
 ```
 
-### 2.2 Cargar base de datos de _Postgres_
+### 3.2 Cargar base de datos de _Postgres_
 
 (con el contenedor de postgres iniciado)
 
@@ -28,11 +40,11 @@ docker exec  -it {nombre_contenedor_mongo} bash /docker-entrypoint-initdb.d/mong
 docker exec  -it {nombre_contenedor_postgres} bash /docker-entrypoint-initdb.d/postgresDataInit.sh
 ```
 
-## 3. Posibles soluciones a problemas
+## 4. Posibles soluciones a problemas
 
-### 3.1 _Error al inicializar base de datos_
+### 4.1 _Error al inicializar base de datos_
 
-#### 3.1.1 [ Solucion 1 ]
+#### 4.1.1 [ Solucion 1 ]
 
 1.  Dar de baja los contenedores:
 
@@ -64,8 +76,8 @@ docker exec  -it {nombre_contenedor_postgres} bash /docker-entrypoint-initdb.d/p
     docker-compose up -d
     ```
 
-#### 3.1.2 [ Solucion 2 ]
+#### 4.1.2 [ Solucion 2 ]
 
 1. Mantener los contenedores levantados, o levantarlos en caso de que esten detenidos.
 
-2. Cargar las bases de datos manualmente como se describe en el [punto 2](#2-cargar-base-de-datos-manualmente).
+2. Cargar las bases de datos manualmente como se describe en el [punto 3](#3-cargar-base-de-datos-manualmente).
