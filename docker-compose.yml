@@ -8,24 +8,26 @@ services:
     image: app
     restart: on-failure
     ports:
-      - '8081:8081'
+      - $SERVER_HOST_PORT:8081
     depends_on:
       - mongodb
       - postgres
     environment:
       SERVER_PORT: 8081
       SPRING_PROFILES_ACTIVE: prod
+      # SPRING_APPLICATION_NAME: $APP_NAME
       # MongoDB
       SPRING_DATA_MONGODB_HOST: mongodb_host
-      SPRING_DATA_MONGODB_USERNAME: root
-      SPRING_DATA_MONGODB_PASSWORD: password
+      SPRING_DATA_MONGODB_USERNAME: $MONGO_USER
+      SPRING_DATA_MONGODB_PASSWORD: $MONGO_PASSWORD
+      SPRING_DATA_MONGODB_DATABASE: $MONGO_DB
       SPRING_DATA_MONGODB_PORT: 27017
       # Postgres
       POSTGRES_HOST: postgres_host
-      POSTGRES_DATABASE: database
+      POSTGRES_DATABASE: $POSTGRES_DB
+      SPRING_DATASOURCE_USERNAME: $POSTGRES_USER
+      SPRING_DATASOURCE_PASSWORD: $POSTGRES_PASSWORD
       POSTGRES_PORT: 5432
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: password
     networks:
       - main-network
 
@@ -33,7 +35,7 @@ services:
     image: mongo:5.0.8
     hostname: mongodb_host
     ports:
-      - '27017:27017'
+      - $MONGO_HOST_PORT:27017
     restart: unless-stopped
     volumes:
       - bd-mongo:/data/db
@@ -41,9 +43,9 @@ services:
       - ./initialization/mongo/resources:/resources/init/
       - ./initialization/csv:/resources/csv/
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: database
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_USER
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PASSWORD
+      MONGO_INITDB_DATABASE: $MONGO_DB
     networks:
       - main-network
 
@@ -51,7 +53,7 @@ services:
     image: postgres:14-alpine
     hostname: postgres_host
     ports:
-      - '5432:5432'
+      - $POSTGRES_HOST_PORT:5432
     restart: unless-stopped
     volumes:
       - bd-postgres:/var/lib/postgresql/data
@@ -60,9 +62,9 @@ services:
       - ./initialization/csv:/resources/csv/
     environment:
       POSTGRES_HOST_AUTH_METHOD: password
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: database
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
     networks:
       - main-network
 
