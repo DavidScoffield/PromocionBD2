@@ -4,7 +4,7 @@
 
 echo "------------ |X| START Formating CSV |X| ------------"
 
-tail -n +2 /resources/csv/$NAME_CSV_FILE.csv > /tmp/csv.csv
+tail -n +2 /resources/csv/$NAME_CSV_FILE.csv >/tmp/csv.csv
 
 echo "------------ |X| FINISH Formating CSV |X| ------------"
 
