@@ -1,67 +1,72 @@
 version: '3.7'
 
 services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: app
+    restart: on-failure
+    ports:
+      - '8081:8081'
+    depends_on:
+      - mongodb
+      - postgres
+    environment:
+      SERVER_PORT: 8081
+      SPRING_PROFILES_ACTIVE: prod
+      # MongoDB
+      SPRING_DATA_MONGODB_HOST: mongodb_host
+      SPRING_DATA_MONGODB_USERNAME: root
+      SPRING_DATA_MONGODB_PASSWORD: password
+      SPRING_DATA_MONGODB_PORT: 27017
+      # Postgres
+      POSTGRES_HOST: postgres_host
+      POSTGRES_DATABASE: database
+      POSTGRES_PORT: 5432
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - main-network
+
+  mongodb:
+    image: mongo:5.0.8
+    hostname: mongodb_host
+    ports:
+      - '27017:27017'
+    restart: unless-stopped
+    volumes:
+      - bd-mongo:/data/db
+      - ./initialization/mongo/init:/docker-entrypoint-initdb.d/
+      - ./initialization/csv:/resources/csv/
+      - ./initialization/mongo/resources:/resources/init/
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: database
+    networks:
+      - main-network
+
   postgres:
     image: postgres:14-alpine
+    hostname: postgres_host
     ports:
       - '5432:5432'
-    restart: always
+    restart: unless-stopped
     volumes:
       - bd-postgres:/var/lib/postgresql/data
-      - ./resources:/resources
+      # - ./resources:/resources
     environment:
       POSTGRES_HOST_AUTH_METHOD: password
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
       POSTGRES_DB: database
-
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   restart: always
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
-  #     PGADMIN_DEFAULT_PASSWORD: admin
-  #   volumes:
-  #     - pgadmin:/var/lib/pgadmin
-  #   ports:
-  #     - 5050:80
-  #   depends_on:
-  #     - postgres
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 1234:8080
-    depends_on:
-      - postgres
-
-  mongo:
-    image: mongo
-    restart: always
-    ports:
-      - 27017:27017
-    volumes:
-      - bd-mongo:/data/db
-      - ./resources:/resources
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: database
-
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: password
-      ME_CONFIG_MONGODB_URL: mongodb://root:password@mongo:27017/
-    depends_on:
-      - mongo
+    networks:
+      - main-network
 
 volumes:
   bd-postgres:
   bd-mongo:
-  # pgadmin:
+
+networks:
+  main-network:
