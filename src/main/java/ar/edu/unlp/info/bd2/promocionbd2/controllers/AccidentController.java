@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -67,12 +68,12 @@ public class AccidentController {
     }
 
     // TODO check parameters
-    /*@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "accidents/getMostDangerousPoints", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getMostDangerousPoints(
             @RequestParam(value = "radius") Double radius,
             @RequestParam(value = "amount", required = false) Integer amount
     ) {
-        List<Point> dangerousPoints;
+        List<Map.Entry<Point, Integer>> dangerousPoints;
         if (amount == null) {
             dangerousPoints = accidentService.getMostDangerousPoints(radius, 5);
         } else {
@@ -80,7 +81,7 @@ public class AccidentController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(dangerousPoints);
-    }*/
+    }
 
     @GetMapping(value = "accidents/dangerous-streets", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getFiveStreetsWithMostAccidents() {

@@ -38,3 +38,7 @@ GET http://localhost:8080/accidents/near/average-distance HTTP/1.1
 ###
 // Retorna las condiciones más comunes en los accidentes
 GET http://localhost:8080/accidents/getCommonConditions HTTP/1.1
+
+###
+// Retorna los puntos más peligrosos a partir de un determinado radio
+GET http://localhost:8080/accidents/getMostDangerousPoints?radius=2 HTTP/1.1

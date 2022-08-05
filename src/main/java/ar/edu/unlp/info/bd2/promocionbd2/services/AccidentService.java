@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface AccidentService {
 
@@ -46,7 +47,7 @@ public interface AccidentService {
      * @return lista de Point
      */
     /*TODO check parameters*/
-    public List<Point> getMostDangerousPoints(Double radius, Integer amount);
+    public List<Map.Entry<Point, Integer>> getMostDangerousPoints(Double radius, Integer amount);
 
     /**
      * Retorna una lista con los nombres de las 5 calles con mas accidentes

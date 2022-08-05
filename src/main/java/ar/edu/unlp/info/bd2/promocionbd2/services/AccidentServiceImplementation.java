@@ -5,8 +5,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -87,14 +91,36 @@ public class AccidentServiceImplementation implements AccidentService {
         } catch (NullPointerException e) {
             result.put("averageDistance", "No distance found");
         }
-        
+
         return result;
     }
 
-    /*TODO check parameters*/
+    /*TODO check parameters and performance*/
     @Override
-    public List<Point> getMostDangerousPoints(Double radius, Integer amount) {
-        return null;
+    public List<Map.Entry<Point, Integer>> getMostDangerousPoints(Double radius, Integer amount) {
+        PriorityQueue<Map.Entry<Point, Integer>> maxHeap = new PriorityQueue<>((a, b) -> { return a.getValue() - b.getValue(); } );
+
+        for (Accident accident : mongoAccidentRepository.findAll()) {
+            Point location = accident.getLocation();
+            try {
+                int numberOfAccidents = mongoAccidentRepository.findAllByLocationNear(accident.getLocation(), new Distance(radius, Metrics.KILOMETERS)).getContent().size();
+                if (maxHeap.size() == amount && numberOfAccidents > maxHeap.peek().getValue()) {
+                    maxHeap.poll(); 
+                }
+                if (maxHeap.size() < amount)  {
+                    maxHeap.add(new AbstractMap.SimpleEntry(location, numberOfAccidents));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        List<Map.Entry<Point, Integer>> result = new ArrayList<>();
+        while(!maxHeap.isEmpty()){
+            result.add(0, maxHeap.poll());
+        }
+
+        return result;
     }
 
     @Override

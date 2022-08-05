@@ -271,4 +271,8 @@ public class Accident extends CsvBean {
 
     @Transient
     private @GeoSpatialIndexed Point location;
+
+    public Point getLocation() {
+        return this.location;
+    }
 }
