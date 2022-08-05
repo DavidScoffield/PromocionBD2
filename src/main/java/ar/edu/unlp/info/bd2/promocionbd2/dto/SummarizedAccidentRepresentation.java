@@ -17,4 +17,4 @@ public class SummarizedAccidentRepresentation {
         this.location = location;
         this.averageDistance = averageDistance;
     }
-    }
+}

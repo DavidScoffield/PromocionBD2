@@ -1,5 +1,6 @@
 package ar.edu.unlp.info.bd2.promocionbd2.controllers;
 
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.dto.SummarizedAccidentRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import ar.edu.unlp.info.bd2.promocionbd2.services.AccidentServiceImplementation;
@@ -89,7 +90,7 @@ public class AccidentController {
 
     @GetMapping(value = "accidents/near/average-distance")
     public ResponseEntity getAverageDistanceToCloseAccidents() {
-        List<SummarizedAccidentRepresentation> accidents = accidentService.getAverageDistanceToCloseAccidents();
+        List<NearAccidentRepresentation> accidents = accidentService.getAverageDistanceToCloseAccidents();
         return ResponseEntity.status(HttpStatus.OK).body(accidents);
     }
 

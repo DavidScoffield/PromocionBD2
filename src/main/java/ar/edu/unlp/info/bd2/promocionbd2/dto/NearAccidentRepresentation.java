@@ -8,7 +8,6 @@ import org.springframework.data.geo.Point;
 @Setter
 public class NearAccidentRepresentation {
     private String ID;
+    private Double averageDistance;
     private Double calculatedDistance;
-    private Point location;
-
 }

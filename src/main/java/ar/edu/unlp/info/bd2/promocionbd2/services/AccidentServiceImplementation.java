@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.dto.SummarizedAccidentRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import ar.edu.unlp.info.bd2.promocionbd2.mongoRepositories.MongoAccidentRepository;
@@ -103,7 +104,7 @@ public class AccidentServiceImplementation implements AccidentService {
         return postgresAccidentRepository.getFiveStreetsWithMostAccidents(pageable).getContent();
     }
 
-    public List<SummarizedAccidentRepresentation> getAverageDistanceToCloseAccidents() {
+    public List<NearAccidentRepresentation> getAverageDistanceToCloseAccidents() {
 
         Stream<Accident> accidentStream = mongoAccidentRepository.findAllBy();
 
