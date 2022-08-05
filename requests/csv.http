@@ -1,38 +1,36 @@
 ###
+// TODO delete
 GET http://localhost:8080/info HTTP/1.1
 
 ###
+// TODO delete
 GET http://localhost:8080/upload-csv?url=C:/Users/david/Documents/proyects/PromocionBD2/tmp/US_Accidents_Dec19_short-10.csv HTTP/1.1
 
 ###
+// TODO delete
 GET http://localhost:8080/upload-csv?url=/home/franco/UNLP code/BD2/US_Accidents_Dec19_10k.csv HTTP/1.1
 
 ###
 // Retorna lista de accidentes ocurridos entre las fechas start y end.
 // Las fechas deben seguir el patron YYYY-MM-DD.
-
 GET http://localhost:8080/accidents/between-dates?start=2016-02-08&end=2016-02-09 HTTP/1.1
 
 ###
 // Retorna lista de accidentes ocurridos a una distancia (radius) en km de un punto geográfico
 // dado por las coordenadas longitude y latitude.
-
 GET http://localhost:8080/accidents/near?longitude=-84.058723&latitude=39.865147&radius=10 HTTP/1.1
 
 ###
 // Retorna la distancia promedio (en metros) desde el inicio al fin del accidente
-
 GET http://localhost:8080/accidents/average-distance HTTP/1.1
 
 ###
 // Retorna las 5 calles con mas accidentes
-
 GET http://localhost:8080/accidents/dangerous-streets HTTP/1.1
 
 
 ###
-// Chequear performance
-
+// Retorna la distancia promedio (en km) de cada accidente a los 10 mas cercanos
 GET http://localhost:8080/accidents/near/average-distance HTTP/1.1
 
 ###

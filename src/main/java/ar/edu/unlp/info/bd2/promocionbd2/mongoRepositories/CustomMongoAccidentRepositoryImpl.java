@@ -24,8 +24,6 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    /*TODO modify so it is faster. It works but it's very slow*/
-
     private NearAccidentRepresentation getAverageDistanceToAccident(Accident accident) {
 
         NearQuery nearQuery = NearQuery.near(accident.getLocation())
@@ -53,7 +51,7 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
         List<NearAccidentRepresentation> accidents = new ArrayList<>();
 
         /*TODO Change to while(iterator.hasNext())*/
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             Accident accident = iterator.next();
             NearAccidentRepresentation averageDistance = getAverageDistanceToAccident(accident);
 

@@ -1,5 +1,6 @@
 package ar.edu.unlp.info.bd2.promocionbd2.services;
 
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import org.springframework.data.geo.Point;
 
@@ -60,4 +61,10 @@ public interface AccidentService {
      * @return un HashMap con las claves "commonAccidentWeatherCondition" (la condición climática más común) y "commonAccidentStartHour" (la hora de comienzo más común)
      */
     HashMap<String, Object> getCommonAccidentConditions();
+
+    /**
+     * Retorna la distancia promedio (en km) de cada accidente a los 10 mas cercanos
+     * @return lista de documentos con id del accidente y distancia promedio (averageDistance)
+     */
+    List<NearAccidentRepresentation> getAverageDistanceToCloseAccidents();
 }

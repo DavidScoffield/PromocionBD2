@@ -130,13 +130,15 @@ public class AccidentServiceImplementation implements AccidentService {
         return postgresAccidentRepository.getFiveStreetsWithMostAccidents(pageable).getContent();
     }
 
+    @Override
     public List<NearAccidentRepresentation> getAverageDistanceToCloseAccidents() {
 
-        Stream<Accident> accidentStream = mongoAccidentRepository.findAllBy();
+        Stream<Accident> accidentsStream = mongoAccidentRepository.findAllBy();
 
-        return mongoAccidentRepository.getAverageDistanceToNearAccidents(accidentStream);
+        return mongoAccidentRepository.getAverageDistanceToNearAccidents(accidentsStream);
     }
 
+    @Override
     public HashMap<String, Object> getCommonAccidentConditions() {
         Pageable pageable = PageRequest.of(0, 1);
         String weatherCondition = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable).getContent().get(0);
