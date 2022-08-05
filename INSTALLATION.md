@@ -1,10 +1,11 @@
 # Guia de instalación y ejecucion de la aplicación
 
+`Los comandos indicados a continuación deben correrse desde el directorio raíz del proyecto`
 ## 1. Instalacion del ambiente
 
-1. Copiar US_Accident_Data.csv al directorio /initialization/csv
+1. Copiar el archivo CSV (Ejemplo: US_Accidents_Dec19.csv) al directorio /initialization/csv
 
-2. Ingresar en el archivo .env, el nombre de archivo del csv sin la extensión.
+2. Ingresar en el archivo .env, como valor de la variable NAME_CSV_FILE, el nombre de archivo del csv sin la extensión.
 
    > A continuacion se explican los valores de configuracion modificables en el archivo .env:
 
@@ -33,6 +34,12 @@
    ```
    docker-compose up -d
    ```
+4. Una vez creada la imagen y los contenedores, la importación del archivo csv a las bases de datos se realizará en segundo plano.
+Podrá seguir su estado con el siguiente comandos:
+
+    ```
+    docker logs {nombre_contenedor}
+    ```
 
 ## 2. Dar de baja ambiente
 
@@ -41,7 +48,6 @@
    ```
    docker-compose down
    ```
-
 ## 3. Cargar base de datos MANUALMENTE
 
 ### 3.1 Carga de la base de datos de _Mongo_
