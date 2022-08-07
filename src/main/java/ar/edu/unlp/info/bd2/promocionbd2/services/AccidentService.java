@@ -52,7 +52,7 @@ public interface AccidentService {
 
     /**
      * Retorna las condiciones más comunes en los accidentes
-     * @return un HashMap con las claves "commonAccidentWeatherCondition" (la condición climática más común) y "commonAccidentStartHour" (la hora de comienzo más común)
+     * @return un HashMap con las claves "commonAccidentWeatherCondition", "commonAccidentWindDirection" y "commonAccidentStartHour"
      */
     HashMap<String, Object> getCommonAccidentConditions();
 

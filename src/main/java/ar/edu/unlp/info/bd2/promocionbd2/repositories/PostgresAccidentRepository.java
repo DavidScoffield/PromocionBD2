@@ -32,4 +32,9 @@ public interface PostgresAccidentRepository extends JpaRepository<Accident,Strin
             "ORDER BY COUNT(EXTRACT (hour FROM a.startTime)) DESC")
     Page<Integer> getCommonAccidentStartHour(Pageable pageable);
 
+    @Query("SELECT a.windDirection FROM Accident a " +
+            "GROUP BY a.windDirection " +
+            "ORDER BY COUNT(a.windDirection) DESC")
+    Page<String> getCommonAccidentWindDirection(Pageable pageable);
+
 }

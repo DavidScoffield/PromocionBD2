@@ -127,10 +127,12 @@ public class AccidentServiceImplementation implements AccidentService {
     public HashMap<String, Object> getCommonAccidentConditions() {
         Pageable pageable = PageRequest.of(0, 1);
         String weatherCondition = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable).getContent().get(0);
+        String windDirection = postgresAccidentRepository.getCommonAccidentWindDirection(pageable).getContent().get(0);
         int startHour = postgresAccidentRepository.getCommonAccidentStartHour(pageable).getContent().get(0);
 
         HashMap<String, Object> result = new HashMap<>();
         result.put("commonAccidentWeatherCondition", weatherCondition);
+        result.put("commonAccidentWindDirection", windDirection);
         result.put("commonAccidentStartHour", startHour);
 
         return result;
