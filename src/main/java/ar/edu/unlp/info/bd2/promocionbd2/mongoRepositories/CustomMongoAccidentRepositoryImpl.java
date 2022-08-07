@@ -1,11 +1,10 @@
 package ar.edu.unlp.info.bd2.promocionbd2.mongoRepositories;
 
-import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
-import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
-import com.mongodb.client.DistinctIterable;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCursor;
-import org.bson.Document;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -14,10 +13,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Stream;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
 public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRepository{
 

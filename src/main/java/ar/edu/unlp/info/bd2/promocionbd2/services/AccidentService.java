@@ -1,22 +1,16 @@
 package ar.edu.unlp.info.bd2.promocionbd2.services;
 
-import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
-import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
-import org.springframework.data.geo.Point;
-
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface AccidentService {
+import org.springframework.data.geo.Point;
 
-    /**
-     * Parsea el CSV y almacena la informacion en las bases de datos.
-     * @param path la ruta donde se encuentra guardado el CSV de Accidentes
-     * */
-    public void uploadCSV(String path) throws IOException;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
+
+public interface AccidentService {
 
     /**
      * Retorna los accidentes ocurridos entre dos fechas

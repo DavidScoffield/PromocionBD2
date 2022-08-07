@@ -1,13 +1,14 @@
 package ar.edu.unlp.info.bd2.promocionbd2.repositories;
 
-import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Date;
-import java.util.List;
+import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
 public interface PostgresAccidentRepository extends JpaRepository<Accident,String> {
 
