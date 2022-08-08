@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -14,6 +16,7 @@ import org.springframework.data.mongodb.core.query.NearQuery;
 import org.springframework.data.mongodb.core.query.Query;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
 public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRepository{
@@ -56,5 +59,20 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
         }
 
         return accidents;
+    }
+
+    public NearAccidentsSeverityRepresentation getNearAccidentsSeverity(Accident accident, double radius) {
+
+        NearQuery nearQuery = NearQuery.near(accident.getLocation(), Metrics.KILOMETERS).spherical(true).maxDistance(radius);
+
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.geoNear(nearQuery,"calculatedDistance"),
+                Aggregation.group("$id").count().as("totalNearAccidents").sum("$Severity").as("totalSeverity")
+        );
+        AggregationResults<NearAccidentsSeverityRepresentation> aggregationResults = mongoTemplate.aggregate(aggregation,"accident", NearAccidentsSeverityRepresentation.class);
+        NearAccidentsSeverityRepresentation result = aggregationResults.getMappedResults().get(0);
+        result.setPoint(new Point(accident.getLocation()));
+
+        return result;
     }
 }

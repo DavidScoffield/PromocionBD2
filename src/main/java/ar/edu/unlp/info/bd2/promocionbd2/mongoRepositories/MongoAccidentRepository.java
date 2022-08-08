@@ -1,6 +1,5 @@
 package ar.edu.unlp.info.bd2.promocionbd2.mongoRepositories;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.data.geo.Distance;
@@ -16,5 +15,4 @@ public interface MongoAccidentRepository extends MongoRepository<Accident, Strin
 
     Stream<Accident> findAllBy();
 
-    List<Accident> findAll();
 }

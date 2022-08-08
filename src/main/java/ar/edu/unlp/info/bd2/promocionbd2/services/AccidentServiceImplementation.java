@@ -22,6 +22,7 @@ import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import ar.edu.unlp.info.bd2.promocionbd2.mongoRepositories.MongoAccidentRepository;
 import ar.edu.unlp.info.bd2.promocionbd2.repositories.PostgresAccidentRepository;
@@ -82,25 +83,25 @@ public class AccidentServiceImplementation implements AccidentService {
 
     /*TODO check parameters and performance*/
     @Override
-    public List<Map.Entry<Point, Integer>> getMostDangerousPoints(Double radius, Integer amount) {
-        PriorityQueue<Map.Entry<Point, Integer>> maxHeap = new PriorityQueue<>((a, b) -> { return a.getValue() - b.getValue(); } );
+    public List<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) {
+        PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap = new PriorityQueue<>((a, b) -> { return a.getTotalSeverity() - b.getTotalSeverity(); } );
 
-        for (Accident accident : mongoAccidentRepository.findAll()) {
-            Point location = accident.getLocation();
+        mongoAccidentRepository.findAllBy().forEach( (Accident accident) -> {
             try {
-                int numberOfAccidents = mongoAccidentRepository.findAllByLocationNear(accident.getLocation(), new Distance(radius, Metrics.KILOMETERS)).getContent().size();
-                if (maxHeap.size() == amount && numberOfAccidents > maxHeap.peek().getValue()) {
+                NearAccidentsSeverityRepresentation nearAccidents = mongoAccidentRepository.getNearAccidentsSeverity(accident, radius);
+                int totalSeverity = nearAccidents.getTotalSeverity();
+                if (maxHeap.size() == amount && totalSeverity > maxHeap.peek().getTotalSeverity()) {
                     maxHeap.poll(); 
                 }
                 if (maxHeap.size() < amount)  {
-                    maxHeap.add(new AbstractMap.SimpleEntry(location, numberOfAccidents));
+                    maxHeap.add(nearAccidents);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        } );
 
-        List<Map.Entry<Point, Integer>> result = new ArrayList<>();
+        List<NearAccidentsSeverityRepresentation> result = new ArrayList<>();
         while(!maxHeap.isEmpty()){
             result.add(0, maxHeap.poll());
         }

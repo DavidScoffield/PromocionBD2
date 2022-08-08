@@ -2,10 +2,8 @@ package ar.edu.unlp.info.bd2.promocionbd2.controllers;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Point;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import ar.edu.unlp.info.bd2.promocionbd2.services.AccidentServiceImplementation;
 
@@ -63,7 +62,7 @@ public class AccidentController {
             @RequestParam(value = "radius") Double radius,
             @RequestParam(value = "amount", required = false) Integer amount
     ) {
-        List<Map.Entry<Point, Integer>> dangerousPoints;
+        List<NearAccidentsSeverityRepresentation> dangerousPoints;
         if (amount == null) {
             dangerousPoints = accidentService.getMostDangerousPoints(radius, 5);
         } else {

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.data.geo.Point;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
 public interface AccidentService {
@@ -39,10 +40,10 @@ public interface AccidentService {
      * Retorna los n puntos más peligrosos dentro de un determinado radio
      * @param radius Radio de busqueda
      * @param amount Cantidad de puntos a buscar
-     * @return lista de Point
+     * @return lista que indica el punto, la cantidad de accidentes cercanos y la severidad total de los accidentes
      */
     /*TODO check parameters*/
-    public List<Map.Entry<Point, Integer>> getMostDangerousPoints(Double radius, Integer amount);
+    public List<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount);
 
     /**
      * Retorna una lista con los nombres de las 5 calles con mas accidentes
