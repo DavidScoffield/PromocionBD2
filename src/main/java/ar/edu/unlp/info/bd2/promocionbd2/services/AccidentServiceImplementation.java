@@ -85,21 +85,46 @@ public class AccidentServiceImplementation implements AccidentService {
     @Override
     public List<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) {
         PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap = new PriorityQueue<>((a, b) -> { return a.getTotalSeverity() - b.getTotalSeverity(); } );
-
+        int maxThreads = 60;
+        List<Thread> threads = new ArrayList<>();
         mongoAccidentRepository.findAllBy().forEach( (Accident accident) -> {
-            try {
-                NearAccidentsSeverityRepresentation nearAccidents = mongoAccidentRepository.getNearAccidentsSeverity(accident, radius);
-                int totalSeverity = nearAccidents.getTotalSeverity();
-                if (maxHeap.size() == amount && totalSeverity > maxHeap.peek().getTotalSeverity()) {
-                    maxHeap.poll(); 
-                }
-                if (maxHeap.size() < amount)  {
-                    maxHeap.add(nearAccidents);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (threads.size() < maxThreads) {
+                Thread thread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        NearAccidentsSeverityRepresentation nearAccidents = mongoAccidentRepository.getNearAccidentsSeverity(accident, radius);
+                        updateMax(nearAccidents);
+                    }
+
+                    synchronized void updateMax(NearAccidentsSeverityRepresentation nearAccidents) {
+                        int totalSeverity = nearAccidents.getTotalSeverity();
+                        if (maxHeap.size() == amount && totalSeverity > maxHeap.peek().getTotalSeverity()) {
+                            maxHeap.poll(); 
+                        }
+                        if (maxHeap.size() < amount)  {
+                            maxHeap.add(nearAccidents);
+                        }
+                    }
+                });
+
+                threads.add(thread);
+                thread.start();
+            } else {
+                try {
+                    for (Thread thread : threads) {
+                        thread.join();
+                        threads.remove(thread);
+                    }
+                } catch (Exception e) {}
             }
         } );
+
+        try {
+            for (Thread thread : threads) {
+                thread.join();
+            }
+        } catch (Exception e) {}
 
         List<NearAccidentsSeverityRepresentation> result = new ArrayList<>();
         while(!maxHeap.isEmpty()){
