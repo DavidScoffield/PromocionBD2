@@ -61,9 +61,13 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
         return accidents;
     }
 
-    public NearAccidentsSeverityRepresentation getNearAccidentsSeverity(Accident accident, double radius) {
+    public List<Point> findDistinctLocation() {
+        return mongoTemplate.findDistinct("location", Accident.class, Point.class);
+    }
 
-        NearQuery nearQuery = NearQuery.near(accident.getLocation(), Metrics.KILOMETERS).spherical(true).maxDistance(radius);
+    public NearAccidentsSeverityRepresentation getNearAccidentsSeverity(Point point, double radius) {
+
+        NearQuery nearQuery = NearQuery.near(point, Metrics.KILOMETERS).spherical(true).maxDistance(radius);
 
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.geoNear(nearQuery,"calculatedDistance"),
@@ -71,7 +75,7 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
         );
         AggregationResults<NearAccidentsSeverityRepresentation> aggregationResults = mongoTemplate.aggregate(aggregation,"accident", NearAccidentsSeverityRepresentation.class);
         NearAccidentsSeverityRepresentation result = aggregationResults.getMappedResults().get(0);
-        result.setPoint(new Point(accident.getLocation()));
+        result.setPoint(new Point(point));
 
         return result;
     }

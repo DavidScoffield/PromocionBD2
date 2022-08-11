@@ -2,13 +2,16 @@ package ar.edu.unlp.info.bd2.promocionbd2.services;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -85,22 +88,30 @@ public class AccidentServiceImplementation implements AccidentService {
     @Override
     public List<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) {
         PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap = new PriorityQueue<>((a, b) -> {
-            return a.getTotalSeverity() - (b != null ? b.getTotalSeverity() : 0);
+            return (a != null ? a.getTotalSeverity() : 0) - (b != null ? b.getTotalSeverity() : 0);
         });
         int maxThreads = 60;
-        List<Thread> threads = new ArrayList<>();
-        mongoAccidentRepository.findAllBy().forEach((Accident accident) -> {
-            if (threads.size() < maxThreads) {
+        AtomicInteger executedThreads = new AtomicInteger(0); 
+        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
+        Lock lock = new ReentrantLock();
+        mongoAccidentRepository.findDistinctLocation().forEach((Point location) -> {
                 Thread thread = new Thread(new Runnable() {
 
                     @Override
                     public void run() {
-                        NearAccidentsSeverityRepresentation nearAccidents = mongoAccidentRepository
-                                .getNearAccidentsSeverity(accident, radius);
-                        updateMax(nearAccidents);
+                        try {
+                            NearAccidentsSeverityRepresentation nearAccidents = mongoAccidentRepository.getNearAccidentsSeverity(location, radius);
+                            lock.lock();
+                            updateMax(nearAccidents);
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        } finally {
+                            executedThreads.incrementAndGet();
+                            lock.unlock();
+                        }
                     }
 
-                    synchronized void updateMax(NearAccidentsSeverityRepresentation nearAccidents) {
+                    synchronized void updateMax(NearAccidentsSeverityRepresentation nearAccidents) throws Exception{
                         int totalSeverity = nearAccidents.getTotalSeverity();
                         if (maxHeap.size() == amount && totalSeverity > maxHeap.peek().getTotalSeverity()) {
                             maxHeap.poll();
@@ -111,25 +122,13 @@ public class AccidentServiceImplementation implements AccidentService {
                     }
                 });
 
-                threads.add(thread);
-                thread.start();
-            } else {
-                try {
-                    for (Thread thread : threads) {
-                        thread.join();
-                        threads.remove(thread);
-                    }
-                } catch (Exception e) {
-                }
-            }
-        });
+                executorService.execute(thread);
+        } );
 
-        try {
-            for (Thread thread : threads) {
-                thread.join();
-            }
-        } catch (Exception e) {
-        }
+
+        executorService.shutdown();
+        while (!executorService.isTerminated()) {}
+        System.out.println("Executed threads: " + executedThreads.get());
 
         List<NearAccidentsSeverityRepresentation> result = new ArrayList<>();
         while (!maxHeap.isEmpty()) {
