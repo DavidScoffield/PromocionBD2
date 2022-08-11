@@ -81,28 +81,31 @@ public class AccidentServiceImplementation implements AccidentService {
         return result;
     }
 
-    /*TODO check parameters and performance*/
+    /* TODO check parameters and performance */
     @Override
     public List<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) {
-        PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap = new PriorityQueue<>((a, b) -> { return a.getTotalSeverity() - b.getTotalSeverity(); } );
+        PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap = new PriorityQueue<>((a, b) -> {
+            return a.getTotalSeverity() - (b != null ? b.getTotalSeverity() : 0);
+        });
         int maxThreads = 60;
         List<Thread> threads = new ArrayList<>();
-        mongoAccidentRepository.findAllBy().forEach( (Accident accident) -> {
+        mongoAccidentRepository.findAllBy().forEach((Accident accident) -> {
             if (threads.size() < maxThreads) {
                 Thread thread = new Thread(new Runnable() {
 
                     @Override
                     public void run() {
-                        NearAccidentsSeverityRepresentation nearAccidents = mongoAccidentRepository.getNearAccidentsSeverity(accident, radius);
+                        NearAccidentsSeverityRepresentation nearAccidents = mongoAccidentRepository
+                                .getNearAccidentsSeverity(accident, radius);
                         updateMax(nearAccidents);
                     }
 
                     synchronized void updateMax(NearAccidentsSeverityRepresentation nearAccidents) {
                         int totalSeverity = nearAccidents.getTotalSeverity();
                         if (maxHeap.size() == amount && totalSeverity > maxHeap.peek().getTotalSeverity()) {
-                            maxHeap.poll(); 
+                            maxHeap.poll();
                         }
-                        if (maxHeap.size() < amount)  {
+                        if (maxHeap.size() < amount) {
                             maxHeap.add(nearAccidents);
                         }
                     }
@@ -116,18 +119,20 @@ public class AccidentServiceImplementation implements AccidentService {
                         thread.join();
                         threads.remove(thread);
                     }
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
-        } );
+        });
 
         try {
             for (Thread thread : threads) {
                 thread.join();
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         List<NearAccidentsSeverityRepresentation> result = new ArrayList<>();
-        while(!maxHeap.isEmpty()){
+        while (!maxHeap.isEmpty()) {
             result.add(0, maxHeap.poll());
         }
 
@@ -136,7 +141,7 @@ public class AccidentServiceImplementation implements AccidentService {
 
     @Override
     public List<String> getFiveStreetsWithMostAccidents() {
-        Pageable pageable = PageRequest.of(0,5);
+        Pageable pageable = PageRequest.of(0, 5);
 
         return postgresAccidentRepository.getFiveStreetsWithMostAccidents(pageable).getContent();
     }
@@ -152,7 +157,8 @@ public class AccidentServiceImplementation implements AccidentService {
     @Override
     public HashMap<String, Object> getCommonAccidentConditions() {
         Pageable pageable = PageRequest.of(0, 1);
-        String weatherCondition = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable).getContent().get(0);
+        String weatherCondition = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable).getContent()
+                .get(0);
         String windDirection = postgresAccidentRepository.getCommonAccidentWindDirection(pageable).getContent().get(0);
         int startHour = postgresAccidentRepository.getCommonAccidentStartHour(pageable).getContent().get(0);
 
