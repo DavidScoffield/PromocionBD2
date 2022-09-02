@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -87,55 +86,85 @@ public class AccidentServiceImplementation implements AccidentService {
     /* TODO check parameters and performance */
     @Override
     public List<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) {
-        PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap = new PriorityQueue<>((a, b) -> {
-            return (a != null ? a.getTotalSeverity() : 0) - (b != null ? b.getTotalSeverity() : 0);
-        });
-        int maxThreads = 60;
-        AtomicInteger executedThreads = new AtomicInteger(0); 
+        int maxThreads = 100, i;
+        PriorityQueue<NearAccidentsSeverityRepresentation> maxHeaps[] = new PriorityQueue[maxThreads];
+        Lock lock[] = new ReentrantLock[maxThreads];
+        int totalIterations[] = {0};
+
+        for (i = 0; i < maxThreads; i++) {
+            maxHeaps[i] = new PriorityQueue<>((a, b) -> {
+                return (b != null ? b.getTotalSeverity() : 0) - (a != null ? a.getTotalSeverity() : 0);
+            });
+            lock[i] = new ReentrantLock();
+        }
+        
         ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
-        Lock lock = new ReentrantLock();
-        mongoAccidentRepository.findDistinctLocation().forEach((Point location) -> {
-                Thread thread = new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        try {
-                            NearAccidentsSeverityRepresentation nearAccidents = mongoAccidentRepository.getNearAccidentsSeverity(location, radius);
-                            lock.lock();
-                            updateMax(nearAccidents);
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        } finally {
-                            executedThreads.incrementAndGet();
-                            lock.unlock();
-                        }
-                    }
-
-                    synchronized void updateMax(NearAccidentsSeverityRepresentation nearAccidents) throws Exception{
-                        int totalSeverity = nearAccidents.getTotalSeverity();
-                        if (maxHeap.size() == amount && totalSeverity > maxHeap.peek().getTotalSeverity()) {
-                            maxHeap.poll();
-                        }
-                        if (maxHeap.size() < amount) {
-                            maxHeap.add(nearAccidents);
-                        }
-                    }
-                });
-
-                executorService.execute(thread);
+        
+        mongoAccidentRepository.findDistinctLocation().forEach( (Point location) -> {
+            int j = totalIterations[0]++ % maxThreads;
+            Thread thread = new Thread(new Worker(maxHeaps[j], location, radius, amount, lock[j]));
+            executorService.execute(thread);
         } );
-
 
         executorService.shutdown();
         while (!executorService.isTerminated()) {}
-        System.out.println("Executed threads: " + executedThreads.get());
 
+        PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap = new PriorityQueue<>((a, b) -> {
+            return (b != null ? b.getTotalSeverity() : 0) - (a != null ? a.getTotalSeverity() : 0);
+        });
         List<NearAccidentsSeverityRepresentation> result = new ArrayList<>();
-        while (!maxHeap.isEmpty()) {
-            result.add(0, maxHeap.poll());
+
+        for (i = 0; i < maxThreads; i++) {
+            while (!maxHeaps[i].isEmpty()) {
+                maxHeap.add(maxHeaps[i].poll());
+            }
+        }
+
+        for (i = 0; i < amount; i++) {
+            result.add(maxHeap.poll());
         }
 
         return result;
+    }
+
+    public class Worker implements Runnable {
+
+        private Point location;
+        private double radius;
+        private int amount;
+        private PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap;
+        private Lock lock;
+
+        public Worker(PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap, Point location, double radius, int amount, Lock lock) {
+            this.maxHeap = maxHeap;
+            this.location = location;
+            this.radius = radius;
+            this.amount = amount;
+            this.lock = lock;
+        }
+
+        @Override
+        public void run() {
+            try {
+                NearAccidentsSeverityRepresentation nearAccidents = mongoAccidentRepository.getNearAccidentsSeverity(location, radius);
+                lock.lock();
+                updateMax(nearAccidents);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        public void updateMax(NearAccidentsSeverityRepresentation nearAccidents) throws Exception {
+            int totalSeverity = nearAccidents.getTotalSeverity();
+            if (maxHeap.size() == amount && totalSeverity > maxHeap.peek().getTotalSeverity()) {
+                maxHeap.poll();
+            }
+            if (maxHeap.size() < amount) {
+                maxHeap.add(nearAccidents);
+            }
+        }
     }
 
     @Override
@@ -156,8 +185,7 @@ public class AccidentServiceImplementation implements AccidentService {
     @Override
     public HashMap<String, Object> getCommonAccidentConditions() {
         Pageable pageable = PageRequest.of(0, 1);
-        String weatherCondition = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable).getContent()
-                .get(0);
+        String weatherCondition = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable).getContent().get(0);
         String windDirection = postgresAccidentRepository.getCommonAccidentWindDirection(pageable).getContent().get(0);
         int startHour = postgresAccidentRepository.getCommonAccidentStartHour(pageable).getContent().get(0);
 

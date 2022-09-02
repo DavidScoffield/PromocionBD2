@@ -62,12 +62,7 @@ public class AccidentController {
             @RequestParam(value = "radius") Double radius,
             @RequestParam(value = "amount", required = false) Integer amount
     ) {
-        List<NearAccidentsSeverityRepresentation> dangerousPoints;
-        if (amount == null) {
-            dangerousPoints = accidentService.getMostDangerousPoints(radius, 5);
-        } else {
-            dangerousPoints = accidentService.getMostDangerousPoints(radius, amount);
-        }
+        List<NearAccidentsSeverityRepresentation> dangerousPoints = accidentService.getMostDangerousPoints(radius, amount == null ? 5 : amount);
 
         return ResponseEntity.status(HttpStatus.OK).body(dangerousPoints);
     }
