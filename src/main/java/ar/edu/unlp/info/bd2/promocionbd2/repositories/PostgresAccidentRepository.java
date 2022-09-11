@@ -27,14 +27,24 @@ public interface PostgresAccidentRepository extends JpaRepository<Accident,Strin
             "ORDER BY COUNT(a.weatherCondition) DESC")
     Page<String> getCommonAccidentWeatherCondition(Pageable pageable);
 
-    @Query("SELECT EXTRACT (hour FROM a.startTime) FROM Accident a " +
-            "GROUP BY EXTRACT (hour FROM a.startTime) " +
-            "ORDER BY COUNT(EXTRACT (hour FROM a.startTime)) DESC")
-    Page<Integer> getCommonAccidentStartHour(Pageable pageable);
-
     @Query("SELECT a.windDirection FROM Accident a " +
             "GROUP BY a.windDirection " +
             "ORDER BY COUNT(a.windDirection) DESC")
     Page<String> getCommonAccidentWindDirection(Pageable pageable);
+
+    @Query("SELECT a.visibility FROM Accident a " +
+            "GROUP BY a.visibility " +
+            "ORDER BY COUNT(a.visibility) DESC")
+    Page<Double> getCommonAccidentVisibility(Pageable pageable);
+
+    @Query("SELECT a.humidity FROM Accident a " +
+            "GROUP BY a.humidity " +
+            "ORDER BY COUNT(a.humidity) DESC")
+    Page<Double> getCommonAccidentHumidity(Pageable pageable);
+
+    @Query("SELECT EXTRACT (hour FROM a.startTime) FROM Accident a " +
+            "GROUP BY EXTRACT (hour FROM a.startTime) " +
+            "ORDER BY COUNT(EXTRACT (hour FROM a.startTime)) DESC")
+    Page<Integer> getCommonAccidentStartHour(Pageable pageable);
 
 }

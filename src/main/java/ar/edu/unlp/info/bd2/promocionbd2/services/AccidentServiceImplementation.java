@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResult;
+import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
@@ -185,16 +187,55 @@ public class AccidentServiceImplementation implements AccidentService {
     @Override
     public HashMap<String, Object> getCommonAccidentConditions() {
         Pageable pageable = PageRequest.of(0, 1);
-        String weatherCondition = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable).getContent().get(0);
-        String windDirection = postgresAccidentRepository.getCommonAccidentWindDirection(pageable).getContent().get(0);
-        int startHour = postgresAccidentRepository.getCommonAccidentStartHour(pageable).getContent().get(0);
+        int totalResults = 5;
+        Object results[] = new Object[totalResults];
+        Thread threads[] = new Thread[totalResults];
+        HashMap<String, Object> hashMap = new HashMap<>();
 
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("commonAccidentWeatherCondition", weatherCondition);
-        result.put("commonAccidentWindDirection", windDirection);
-        result.put("commonAccidentStartHour", startHour);
+        for (int i = 0; i < totalResults; i++) {
+            final int j = i; 
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Object result = null;
+                    switch(j) {
+                        case 0:
+                            result = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable);
+                            break;
+                        case 1:
+                            result = postgresAccidentRepository.getCommonAccidentWindDirection(pageable);
+                            break;
+                        case 2:
+                            result = postgresAccidentRepository.getCommonAccidentVisibility(pageable);
+                            break;
+                        case 3:
+                            result = postgresAccidentRepository.getCommonAccidentHumidity(pageable);
+                            break;
+                        case 4:
+                            result = postgresAccidentRepository.getCommonAccidentStartHour(pageable);
+                            break;
+                    }
+                    results[j] = ((Page<Object>) result).getContent().get(0);
+                }
+            });
 
-        return result;
+            threads[i] = thread;
+            thread.start();
+        }
+
+        try {
+            for (Thread thread : threads) {
+                thread.join();
+            }
+        } catch (Exception e) {}
+
+        hashMap.put("commonAccidentWeatherCondition", results[0]);
+        hashMap.put("commonAccidentWindDirection", results[1]);
+        hashMap.put("commonAccidentVisibility", results[2]);
+        hashMap.put("commonAccidentHumidity", results[3]);
+        hashMap.put("commonAccidentStartHour", results[4]);
+
+        return hashMap;
     }
 
 }
