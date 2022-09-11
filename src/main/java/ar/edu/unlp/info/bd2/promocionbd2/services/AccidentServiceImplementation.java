@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.TotalAccidentsInLocationRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import ar.edu.unlp.info.bd2.promocionbd2.mongoRepositories.MongoAccidentRepository;
 import ar.edu.unlp.info.bd2.promocionbd2.repositories.PostgresAccidentRepository;
@@ -86,7 +87,7 @@ public class AccidentServiceImplementation implements AccidentService {
     /* TODO check parameters and performance */
     @Override
     public List<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) {
-        int maxThreads = 100, i;
+        int maxThreads = amount < 100 ? amount : 100, i;
         PriorityQueue<NearAccidentsSeverityRepresentation> maxHeaps[] = new PriorityQueue[maxThreads];
         Lock lock[] = new ReentrantLock[maxThreads];
         int totalIterations[] = {0};
@@ -97,10 +98,9 @@ public class AccidentServiceImplementation implements AccidentService {
             });
             lock[i] = new ReentrantLock();
         }
-        
         ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
         
-        mongoAccidentRepository.findDistinctLocation().forEach( (Point location) -> {
+        mongoAccidentRepository.findLocationsWithMostAccidents(amount).forEach( (TotalAccidentsInLocationRepresentation location) -> {
             int j = totalIterations[0]++ % maxThreads;
             Thread thread = new Thread(new Worker(maxHeaps[j], location, radius, amount, lock[j]));
             executorService.execute(thread);
@@ -129,13 +129,13 @@ public class AccidentServiceImplementation implements AccidentService {
 
     public class Worker implements Runnable {
 
-        private Point location;
+        private TotalAccidentsInLocationRepresentation location;
         private double radius;
         private int amount;
         private PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap;
         private Lock lock;
 
-        public Worker(PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap, Point location, double radius, int amount, Lock lock) {
+        public Worker(PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap, TotalAccidentsInLocationRepresentation location, double radius, int amount, Lock lock) {
             this.maxHeap = maxHeap;
             this.location = location;
             this.radius = radius;

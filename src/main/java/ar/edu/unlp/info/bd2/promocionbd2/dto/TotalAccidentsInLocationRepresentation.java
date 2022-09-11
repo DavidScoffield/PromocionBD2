@@ -7,9 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NearAccidentsSeverityRepresentation {
+public class TotalAccidentsInLocationRepresentation {
     private Point point;
-    private int totalSeverity;
     private int totalAccidentsInLocation;
-    private int totalNearAccidents;
 }
