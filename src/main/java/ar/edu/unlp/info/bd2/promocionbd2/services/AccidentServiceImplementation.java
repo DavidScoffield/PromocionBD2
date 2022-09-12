@@ -20,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResult;
-import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
@@ -176,12 +175,28 @@ public class AccidentServiceImplementation implements AccidentService {
         return postgresAccidentRepository.getFiveStreetsWithMostAccidents(pageable).getContent();
     }
 
+    public HashMap<String, Integer> getPaginationInfo(Page<Object> page, int currentPage, int perPage) {
+        HashMap<String, Integer> paginationInfo = new HashMap<>();
+
+        paginationInfo.put("totalPages", page.getTotalPages());
+        paginationInfo.put("currentPage", currentPage);
+        paginationInfo.put("perPage", perPage);
+        paginationInfo.put("totalElements", (int) page.getTotalElements());
+        paginationInfo.put("totalElementsInCurrentPage", page.getNumberOfElements());
+
+        return paginationInfo;
+    }
+
     @Override
-    public List<NearAccidentRepresentation> getAverageDistanceToCloseAccidents() {
+    public HashMap<Object, Object> getAverageDistanceToCloseAccidents(int page, int perPage) {
 
-        Stream<Accident> accidentsStream = mongoAccidentRepository.findAllBy();
+        Page<Accident> accidentsPage = mongoAccidentRepository.findAllBy(PageRequest.of(page, perPage));
+        HashMap<Object, Object> result = new HashMap<>();
 
-        return mongoAccidentRepository.getAverageDistanceToNearAccidents(accidentsStream);
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {return null;}), page, perPage));
+        result.put("content", mongoAccidentRepository.getAverageDistanceToNearAccidents(accidentsPage.getContent()));
+        
+        return result;
     }
 
     @Override

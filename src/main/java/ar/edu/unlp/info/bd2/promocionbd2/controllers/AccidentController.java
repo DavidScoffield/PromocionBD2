@@ -74,9 +74,11 @@ public class AccidentController {
     }
 
     @GetMapping(value = "accidents/near/average-distance")
-    public ResponseEntity getAverageDistanceToCloseAccidents() {
-        List<NearAccidentRepresentation> accidents = accidentService.getAverageDistanceToCloseAccidents();
-        return ResponseEntity.status(HttpStatus.OK).body(accidents);
+    public ResponseEntity getAverageDistanceToCloseAccidents(
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "perPage") Integer perPage
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAverageDistanceToCloseAccidents(page, perPage));
     }
 
     @GetMapping(value = "accidents/getCommonConditions", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,9 +1,9 @@
 package ar.edu.unlp.info.bd2.promocionbd2.mongoRepositories;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,7 +21,7 @@ import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation
 import ar.edu.unlp.info.bd2.promocionbd2.dto.TotalAccidentsInLocationRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
-public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRepository{
+public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRepository {
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -46,21 +46,28 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
         return res;
     }
 
-    public List<NearAccidentRepresentation> getAverageDistanceToNearAccidents(Stream<Accident> accidentStream) {
+    public NearAccidentRepresentation[] getAverageDistanceToNearAccidents(List<Accident> accidents) {
+        int totalResults = accidents.size();
+        NearAccidentRepresentation result[] = new NearAccidentRepresentation[totalResults];
+        ExecutorService executorService = Executors.newFixedThreadPool(totalResults < 100 ? totalResults : 100);
 
-        Iterator<Accident> iterator = accidentStream.iterator();
+        for (int i = 0; i < totalResults; i++) {
+            final int j = i; 
+            
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    result[j] = getAverageDistanceToAccident(accidents.get(j));
+                }
+            });
 
-        List<NearAccidentRepresentation> accidents = new ArrayList<>();
-
-        /*TODO Change to while(iterator.hasNext())*/
-        for (int i = 0; i < 100; i++) {
-            Accident accident = iterator.next();
-            NearAccidentRepresentation averageDistance = getAverageDistanceToAccident(accident);
-
-            accidents.add(averageDistance);
+            executorService.execute(thread);
         }
 
-        return accidents;
+        executorService.shutdown();
+        while (!executorService.isTerminated()) {}
+
+        return result;
     }
 
     public List<TotalAccidentsInLocationRepresentation> findLocationsWithMostAccidents(int maxLocations) {

@@ -16,10 +16,9 @@ GET http://localhost:8080/accidents/average-distance HTTP/1.1
 // Retorna las 5 calles con más accidentes
 GET http://localhost:8080/accidents/dangerous-streets HTTP/1.1
 
-
 ###
 // Retorna la distancia promedio (en km) de cada accidente a los 10 más cercanos
-GET http://localhost:8080/accidents/near/average-distance HTTP/1.1
+GET http://localhost:8080/accidents/near/average-distance?page=1&perPage=10 HTTP/1.1
 
 ###
 // Retorna las condiciones más comunes en los accidentes
