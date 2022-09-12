@@ -1,6 +1,5 @@
 package ar.edu.unlp.info.bd2.promocionbd2.services;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -32,7 +31,7 @@ public class AccidentServiceImplementation implements AccidentService {
     @Autowired
     private MongoAccidentRepository mongoAccidentRepository;
 
-    public HashMap<String, Integer> getPaginationInfo(Page<Object> page) {
+    private HashMap<String, Integer> getPaginationInfo(Page<Object> page) {
         HashMap<String, Integer> paginationInfo = new HashMap<>();
 
         paginationInfo.put("totalPages", page.getTotalPages());
@@ -44,12 +43,39 @@ public class AccidentServiceImplementation implements AccidentService {
         return paginationInfo;
     }
 
-    public HashMap<Object, Object> getAccidentsBetweenDates(String startDate, String endDate, int page, int perPage) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date start = formatter.parse(startDate);
-        Date end = formatter.parse(endDate);
-        
+    private void checkCoordinates(Double latitude, Double longitude) throws Exception {
+        if ((!(longitude >= -180.0 && longitude <= 180.0)) || (!(latitude >= -90 && latitude <= 90))) {
+            throw new Exception("Longitude or latitude value out of bounds");
+        }
+    }
+
+    private void checkRadius(Double radius) throws Exception {
+        if (radius <= 0) {
+            throw new Exception("Radius has to be greater than 0");
+        }
+    }
+
+    private void checkPaginationParams(Integer page, Integer perPage) throws Exception {
+        if (page < 0 || perPage < 1) {
+            throw new Exception("Invalid pagination params");
+        }
+    }
+
+    @Override
+    public HashMap<Object, Object> getAccidentsBetweenDates(String startDate, String endDate, int page, int perPage) throws Exception {
+        Date start, end;
+
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            formatter.setLenient(false);
+            start = formatter.parse(startDate);
+            end = formatter.parse(endDate);
+        } catch (Exception e) {
+            throw new Exception("Date must follow the pattern dd-mm-yyyy");
+        }
         page--;
+        checkPaginationParams(page, perPage);
+
         Page<Accident> accidentsPage = postgresAccidentRepository.findAllByStartTimeBetween(start, end, PageRequest.of(page, perPage));
         HashMap<Object, Object> result = new HashMap<>();
 
@@ -62,9 +88,8 @@ public class AccidentServiceImplementation implements AccidentService {
     @Override
     public List<Accident> getAccidentsNearLocation(Double longitude, Double latitude, Double radius) throws Exception {
 
-        if ((!(longitude >= -180.0 && longitude <= 180.0)) || (!(latitude >= -90 && latitude <= 90))) {
-            throw new Exception("Longitude or latitude value out of bounds.");
-        }
+        checkCoordinates(latitude, longitude);
+        checkRadius(radius);
 
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radius, Metrics.KILOMETERS);
@@ -79,7 +104,7 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
-    public HashMap<String, Object> getAverageDistance() {
+    public HashMap<String, Object> getAverageDistance() throws Exception {
         HashMap<String, Object> result = new HashMap<>();
 
         try {
@@ -94,20 +119,28 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
-    public Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) {
+    public Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) throws Exception {
+        if (amount < 1) {
+            throw new Exception("Amount has to be greater than 0");
+        }
+
+        checkRadius(radius);
+
         return mongoAccidentRepository.getMostDangerousPoints(radius, amount);
     }
 
     @Override
-    public List<String> getFiveStreetsWithMostAccidents() {
+    public List<String> getFiveStreetsWithMostAccidents() throws Exception {
         Pageable pageable = PageRequest.of(0, 5);
 
         return postgresAccidentRepository.getFiveStreetsWithMostAccidents(pageable).getContent();
     }
 
     @Override
-    public HashMap<Object, Object> getAverageDistanceToCloseAccidents(int page, int perPage) {
+    public HashMap<Object, Object> getAverageDistanceToCloseAccidents(int page, int perPage) throws Exception {
         page--;
+        checkPaginationParams(page, perPage);
+
         Page<Accident> accidentsPage = mongoAccidentRepository.findAllBy(PageRequest.of(page, perPage));
         HashMap<Object, Object> result = new HashMap<>();
 
@@ -118,7 +151,7 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
-    public HashMap<String, Object> getCommonAccidentConditions() {
+    public HashMap<String, Object> getCommonAccidentConditions() throws Exception {
         Pageable pageable = PageRequest.of(0, 1);
         int totalResults = 5;
         Object results[] = new Object[totalResults];

@@ -1,7 +1,7 @@
 ###
 // Retorna lista de accidentes ocurridos entre las fechas start y end
 // Las fechas deben seguir el formato YYYY-MM-DD.
-GET http://localhost:8080/accidents/between-dates?start=2016-02-08&end=2016-02-09&page=7&perPage=10 HTTP/1.1
+GET http://localhost:8080/accidents/between-dates?start=08-02-2016&end=09-02-2016&page=7&perPage=10 HTTP/1.1
 
 ###
 // Retorna lista de accidentes ocurridos a una distancia (radius) en km de un punto geográfico
@@ -26,4 +26,4 @@ GET http://localhost:8080/accidents/getCommonConditions HTTP/1.1
 
 ###
 // Retorna los puntos más peligrosos a partir de un determinado radio
-GET http://localhost:8080/accidents/getMostDangerousPoints?radius=2 HTTP/1.1
+GET http://localhost:8080/accidents/getMostDangerousPoints?radius=2&amount=5 HTTP/1.1

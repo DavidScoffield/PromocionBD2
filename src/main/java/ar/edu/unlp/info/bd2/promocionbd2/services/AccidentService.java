@@ -1,6 +1,5 @@
 package ar.edu.unlp.info.bd2.promocionbd2.services;
 
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,7 @@ public interface AccidentService {
      * @param perPage cantidad de elementos por página
      * @return un HashMap con una clave que posee información sobre la página y otra clave con el resultado obtenido
      */
-    public HashMap<Object, Object> getAccidentsBetweenDates(String start, String end, int page, int perPage) throws ParseException;
+    public HashMap<Object, Object> getAccidentsBetweenDates(String start, String end, int page, int perPage) throws Exception;
 
     /**
      * Retorna los accidentes ocurridos a cierta distancia de un punto geografico
@@ -32,8 +31,9 @@ public interface AccidentService {
     /**
      * Retorna la distancia promedio desde el inicio al fin del accidente
      * @return distancia promedio
+     * @throws Exception
      */
-    HashMap<String, Object> getAverageDistance();
+    HashMap<String, Object> getAverageDistance() throws Exception;
 
     /**
      * Retorna los N puntos más peligrosos dentro de un determinado radio
@@ -42,27 +42,28 @@ public interface AccidentService {
      * @return lista que indica el punto, la cantidad de accidentes en el punto, 
      *         la cantidad de accidentes cercanos y la severidad total de los accidentes
      */
-    public Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount);
+    public Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) throws Exception;
 
     /**
      * Retorna una lista con los nombres de las 5 calles con mas accidentes
      * @return lista de String
      */
-    public List<String> getFiveStreetsWithMostAccidents();
+    public List<String> getFiveStreetsWithMostAccidents() throws Exception;
 
     /**
      * Retorna las condiciones más comunes en los accidentes
      * @return un HashMap con las claves "commonAccidentWeatherCondition", "commonAccidentWindDirection",
      *          "commonAccidentHumidity", "commonAccidentVisibility" y "commonAccidentStartHour"
      */
-    HashMap<String, Object> getCommonAccidentConditions();
+    HashMap<String, Object> getCommonAccidentConditions() throws Exception;
 
     /**
      * Retorna la distancia promedio (en km) de cada accidente a los 10 mas cercanos
      * @param page página solicitada
      * @param perPage cantidad de elementos por página
      * @return un HashMap con una clave que posee información sobre la página y otra clave con el resultado obtenido
+     * @throws Exception
      */
-    HashMap<Object, Object> getAverageDistanceToCloseAccidents(int page, int perPage);
+    HashMap<Object, Object> getAverageDistanceToCloseAccidents(int page, int perPage) throws Exception;
 
 }
