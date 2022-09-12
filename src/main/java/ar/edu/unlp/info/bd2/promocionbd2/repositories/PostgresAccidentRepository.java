@@ -1,7 +1,6 @@
 package ar.edu.unlp.info.bd2.promocionbd2.repositories;
 
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,7 @@ import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
 public interface PostgresAccidentRepository extends JpaRepository<Accident,String> {
 
-    List<Accident> findAllByStartTimeBetween(Date start, Date end);
+    Page<Accident> findAllByStartTimeBetween(Date start, Date end, Pageable pageable);
 
     @Query("SELECT AVG(a.distance) FROM Accident a")
     Double getAverageDistance();

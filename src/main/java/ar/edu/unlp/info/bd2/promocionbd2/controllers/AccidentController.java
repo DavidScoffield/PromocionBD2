@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import ar.edu.unlp.info.bd2.promocionbd2.services.AccidentServiceImplementation;
-
 
 @RestController
 public class AccidentController {
@@ -26,11 +24,12 @@ public class AccidentController {
     @GetMapping(value = "accidents/between-dates", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAccidentsBetweenDates(
             @RequestParam(value = "start") String start,
-            @RequestParam(value = "end") String end) {
+            @RequestParam(value = "end") String end,
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "perPage") Integer perPage) {
 
         try {
-            List<Accident> accidents = accidentService.getAccidentsBetweenDates(start, end);
-            return ResponseEntity.status(HttpStatus.OK).body(accidents);
+            return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAccidentsBetweenDates(start, end, page, perPage));
         } catch (ParseException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Dates could not be parsed. Make sure it follows the pattern yyyy/mm/dd");
@@ -42,7 +41,8 @@ public class AccidentController {
     public ResponseEntity getAccidentsNearLocation(
             @RequestParam(value = "longitude") Double longitude,
             @RequestParam(value = "latitude") Double latitude,
-            @RequestParam(value = "radius") Double radius) {
+            @RequestParam(value = "radius") Double radius
+    ) {
         try {
             List<Accident> accidents = accidentService.getAccidentsNearLocation(longitude, latitude, radius);
             return ResponseEntity.status(HttpStatus.OK).body(accidents);

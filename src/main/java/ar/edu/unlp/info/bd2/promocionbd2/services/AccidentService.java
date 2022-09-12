@@ -13,9 +13,11 @@ public interface AccidentService {
      * Retorna los accidentes ocurridos entre dos fechas
      * @param start fecha de comienzo del intervalo
      * @param end fecha de fin del intervalo
-     * @return lista de Accident
+     * @param page página solicitada
+     * @param perPage cantidad de elementos por página
+     * @return un HashMap con una clave que posee información sobre la página y otra clave con el resultado obtenido
      */
-    public List<Accident> getAccidentsBetweenDates(String start, String end) throws ParseException;
+    public HashMap<Object, Object> getAccidentsBetweenDates(String start, String end, int page, int perPage) throws ParseException;
 
     /**
      * Retorna los accidentes ocurridos a cierta distancia de un punto geografico

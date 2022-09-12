@@ -12,7 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,7 +23,6 @@ import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
-import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.dto.TotalAccidentsInLocationRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
@@ -40,15 +38,31 @@ public class AccidentServiceImplementation implements AccidentService {
     @Autowired
     private MongoAccidentRepository mongoAccidentRepository;
 
-    public List<Accident> getAccidentsBetweenDates(String date1, String date2) throws ParseException {
+    public HashMap<String, Integer> getPaginationInfo(Page<Object> page) {
+        HashMap<String, Integer> paginationInfo = new HashMap<>();
+
+        paginationInfo.put("totalPages", page.getTotalPages());
+        paginationInfo.put("currentPage", page.getPageable().getPageNumber() + 1);
+        paginationInfo.put("perPage", page.getPageable().getPageSize());
+        paginationInfo.put("totalElements", (int) page.getTotalElements());
+        paginationInfo.put("totalElementsInCurrentPage", page.getNumberOfElements());
+
+        return paginationInfo;
+    }
+
+    public HashMap<Object, Object> getAccidentsBetweenDates(String startDate, String endDate, int page, int perPage) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date start = formatter.parse(startDate);
+        Date end = formatter.parse(endDate);
 
-        Date start = formatter.parse(date1);
-        Date end = formatter.parse(date2);
+        page = page - 1;
+        Page<Accident> accidentsPage = postgresAccidentRepository.findAllByStartTimeBetween(start, end, PageRequest.of(page, perPage));
+        HashMap<Object, Object> result = new HashMap<>();
 
-        List<Accident> accidents = postgresAccidentRepository.findAllByStartTimeBetween(start, end);
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {return null;})));
+        result.put("content", accidentsPage.getContent());
 
-        return accidents;
+        return result;
     }
 
     @Override
@@ -175,25 +189,13 @@ public class AccidentServiceImplementation implements AccidentService {
         return postgresAccidentRepository.getFiveStreetsWithMostAccidents(pageable).getContent();
     }
 
-    public HashMap<String, Integer> getPaginationInfo(Page<Object> page, int currentPage, int perPage) {
-        HashMap<String, Integer> paginationInfo = new HashMap<>();
-
-        paginationInfo.put("totalPages", page.getTotalPages());
-        paginationInfo.put("currentPage", currentPage);
-        paginationInfo.put("perPage", perPage);
-        paginationInfo.put("totalElements", (int) page.getTotalElements());
-        paginationInfo.put("totalElementsInCurrentPage", page.getNumberOfElements());
-
-        return paginationInfo;
-    }
-
     @Override
     public HashMap<Object, Object> getAverageDistanceToCloseAccidents(int page, int perPage) {
-
+        page = page - 1;
         Page<Accident> accidentsPage = mongoAccidentRepository.findAllBy(PageRequest.of(page, perPage));
         HashMap<Object, Object> result = new HashMap<>();
 
-        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {return null;}), page, perPage));
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {return null;})));
         result.put("content", mongoAccidentRepository.getAverageDistanceToNearAccidents(accidentsPage.getContent()));
         
         return result;

@@ -1,11 +1,11 @@
 ###
-// Retorna lista de accidentes ocurridos entre las fechas start y end.
+// Retorna lista de accidentes ocurridos entre las fechas start y end
 // Las fechas deben seguir el formato YYYY-MM-DD.
-GET http://localhost:8080/accidents/between-dates?start=2016-02-08&end=2016-02-09 HTTP/1.1
+GET http://localhost:8080/accidents/between-dates?start=2016-02-08&end=2016-02-09&page=7&perPage=10 HTTP/1.1
 
 ###
 // Retorna lista de accidentes ocurridos a una distancia (radius) en km de un punto geográfico
-// dado por las coordenadas longitude y latitude.
+// dado por las coordenadas longitude y latitude
 GET http://localhost:8080/accidents/near?longitude=-84.058723&latitude=39.865147&radius=10 HTTP/1.1
 
 ###
