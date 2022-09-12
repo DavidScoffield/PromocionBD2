@@ -1,6 +1,7 @@
 package ar.edu.unlp.info.bd2.promocionbd2.services;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,8 +42,7 @@ public interface AccidentService {
      * @return lista que indica el punto, la cantidad de accidentes en el punto, 
      *         la cantidad de accidentes cercanos y la severidad total de los accidentes
      */
-    /*TODO check parameters*/
-    public List<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount);
+    public Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount);
 
     /**
      * Retorna una lista con los nombres de las 5 calles con mas accidentes

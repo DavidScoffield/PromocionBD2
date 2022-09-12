@@ -1,6 +1,7 @@
 package ar.edu.unlp.info.bd2.promocionbd2.controllers;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,6 @@ public class AccidentController {
         }
     }
 
-
     @GetMapping(value = "accidents/near", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAccidentsNearLocation(
             @RequestParam(value = "longitude") Double longitude,
@@ -56,13 +56,12 @@ public class AccidentController {
         return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAverageDistance());
     }
 
-    // TODO check parameters
     @GetMapping(value = "accidents/getMostDangerousPoints", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getMostDangerousPoints(
             @RequestParam(value = "radius") Double radius,
             @RequestParam(value = "amount", required = false) Integer amount
     ) {
-        List<NearAccidentsSeverityRepresentation> dangerousPoints = accidentService.getMostDangerousPoints(radius, amount == null ? 5 : amount);
+        Collection<NearAccidentsSeverityRepresentation> dangerousPoints = accidentService.getMostDangerousPoints(radius, amount == null ? 5 : amount);
 
         return ResponseEntity.status(HttpStatus.OK).body(dangerousPoints);
     }
