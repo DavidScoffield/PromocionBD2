@@ -21,6 +21,7 @@ import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import ar.edu.unlp.info.bd2.promocionbd2.mongoRepositories.MongoAccidentRepository;
 import ar.edu.unlp.info.bd2.promocionbd2.repositories.PostgresAccidentRepository;
+import ar.edu.unlp.info.bd2.promocionbd2.elasticsearchRepositories.ElasticsearchAccidentRepository;
 
 @Service
 public class AccidentServiceImplementation implements AccidentService {
@@ -30,6 +31,9 @@ public class AccidentServiceImplementation implements AccidentService {
 
     @Autowired
     private MongoAccidentRepository mongoAccidentRepository;
+
+    @Autowired
+    private ElasticsearchAccidentRepository elasticsearchAccidentRepository;
 
     private HashMap<String, Integer> getPaginationInfo(Page<Object> page) {
         HashMap<String, Integer> paginationInfo = new HashMap<>();
@@ -87,7 +91,6 @@ public class AccidentServiceImplementation implements AccidentService {
 
     @Override
     public List<Accident> getAccidentsNearLocation(Double longitude, Double latitude, Double radius) throws Exception {
-
         checkCoordinates(latitude, longitude);
         checkRadius(radius);
 

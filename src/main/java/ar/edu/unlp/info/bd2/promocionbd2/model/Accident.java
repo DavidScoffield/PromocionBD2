@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,12 +17,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @Entity
 @Document(collection = "accident")
 @Table(name = "accident")
+@org.springframework.data.elasticsearch.annotations.Document(indexName="accident")
 public class Accident {
 
     @Id
@@ -43,10 +44,12 @@ public class Accident {
 
     @Column(name = "start_time")
     @Field(name = "Start_Time")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     @Column(name = "end_time")
     @Field(name = "End_Time")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
     @Column(name = "start_lat")
@@ -106,6 +109,7 @@ public class Accident {
     private String country;
 
     @Column(name = "timezone")
+    @Field(name = "timezone")
     private String timezone;
 
     @Column(name = "airport_code")
@@ -114,6 +118,7 @@ public class Accident {
 
     @Column(name = "weather_timestamp")
     @Field(name = "Weather_Timestamp")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date weatherTimestamp;
 
     @Column(name = "temperature")
