@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.1
+    restart: always
+    ports:
+      - 9200:9200
+      - 9300:9300
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - bd-elastic-dev:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - xpack.security.enabled=false
+    networks:
+      - elastic-net
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.4.1
+    restart: always
+    ports:
+      - 5000:5000
+    volumes:
+      - ./initialization/logstash/pipeline:/usr/share/logstash/pipeline/
+      - ./initialization/csv:/resources/csv/
+    environment:
+      - NAME_CSV_FILE=$NAME_CSV_FILE
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - 'LS_JAVA_OPTS=-Xmx256m -Xms256m'
+      - pipeline.workers=1
+    networks:
+      - elastic-net
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+
+  kivana:
+    image: docker.elastic.co/kibana/kibana:8.4.1
+    restart: always
+    ports:
+      - 5601:5601
+    environment:
+      - NAME_CSV_FILE=$NAME_CSV_FILE
+      - 'ELASTICSEARCH_HOSTS=http://elasticsearch:9200'
+    networks:
+      - elastic-net
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+
+volumes:
+  bd-elastic-dev:
+
+networks:
+  elastic-net:

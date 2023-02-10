@@ -1,6 +1,7 @@
 version: '3.7'
 
 services:
+  # POSTGRES
   postgres:
     image: postgres:14-alpine
     ports:
@@ -39,6 +40,7 @@ services:
   #   depends_on:
   #     - postgres
 
+  # MONGODB
   mongo:
     image: mongo:5.0.8
     restart: always
@@ -67,7 +69,30 @@ services:
     depends_on:
       - mongo
 
+  # ELASTICSEARCH
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.1
+    restart: always
+    ports:
+      - 9200:9200
+      - 9300:9300
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - bd-elastic-dev:/usr/share/elasticsearch/data
+      - ./initialization/elastic/init:/docker-entrypoint-initdb.d/
+      - ./initialization/elastic/resources:/resources/init/
+      - ./initialization/csv:/resources/csv/
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - NAME_CSV_FILE=$NAME_CSV_FILE
+
 volumes:
   bd-postgres-dev:
   bd-mongo-dev:
+  bd-elastic-dev:
   # pgadmin:
