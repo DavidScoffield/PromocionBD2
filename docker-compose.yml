@@ -69,9 +69,50 @@ services:
     networks:
       - main-network
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.1
+    restart: always
+    ports:
+      - $ELASTIC_HOST_PORT:9200
+      - 9300:9300
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - bd-elastic:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - xpack.security.enabled=false
+    networks:
+      - main-network
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.4.1
+    restart: always
+    ports:
+      - $LOGSTASH_HOST_PORT:5000
+    volumes:
+      - ./initialization/logstash/pipeline:/usr/share/logstash/pipeline/
+      - ./initialization/csv:/resources/csv/
+    environment:
+      - NAME_CSV_FILE=$NAME_CSV_FILE
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - 'LS_JAVA_OPTS=-Xmx256m -Xms256m'
+      - pipeline.workers=1
+    networks:
+      - main-network
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+
 volumes:
   bd-postgres:
   bd-mongo:
+  bd-elastic:
 
 networks:
   main-network:
