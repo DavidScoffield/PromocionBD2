@@ -5,7 +5,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.4.1
     restart: always
     ports:
-      - 9200:9200
+      - $ELASTIC_HOST_PORT:9200
       - 9300:9300
     ulimits:
       memlock:
@@ -31,7 +31,7 @@ services:
       - ./initialization/csv:/resources/csv/
     environment:
       - NAME_CSV_FILE=$NAME_CSV_FILE
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:$ELASTIC_HOST_PORT
       - 'LS_JAVA_OPTS=-Xmx256m -Xms256m'
       - pipeline.workers=1
     networks:
@@ -48,7 +48,7 @@ services:
       - 5601:5601
     environment:
       - NAME_CSV_FILE=$NAME_CSV_FILE
-      - 'ELASTICSEARCH_HOSTS=http://elasticsearch:9200'
+      - 'ELASTICSEARCH_HOSTS=http://elasticsearch:$ELASTIC_HOST_PORT'
     networks:
       - elastic-net
     depends_on:
