@@ -11,24 +11,25 @@
     > A continuacion se explican los valores de configuracion modificables en el archivo .env:
 
     ```sh
-     # Postgres configuration
-     POSTGRES_DB = nombre de la base de datos de postgres
-     POSTGRES_USER = nombre de usuario de postgres
-     POSTGRES_PASSWORD = contraseña de postgres
+    # Postgres configuration
+    POSTGRES_DB = nombre de la base de datos de postgres
+    POSTGRES_USER = nombre de usuario de postgres
+    POSTGRES_PASSWORD = contraseña de postgres
 
-     # Mongo configuration
-     MONGO_DB = nombre de la base de datos de mongo
-     MONGO_USER = nombre de usuario de mongo
-     MONGO_PASSWORD = contraseña de mongo
+    # Mongo configuration
+    MONGO_DB = nombre de la base de datos de mongo
+    MONGO_USER = nombre de usuario de mongo
+    MONGO_PASSWORD = contraseña de mongo
 
-     # HOST PORTS
-     SERVER_HOST_PORT = puerto que se expondra en el host que corre el contenedor de la aplicacion
-     MONGO_HOST_PORT = puerto que se expondra en el host que corre el contener de mongo
-     POSTGRES_HOST_PORT = puerto que se expondra en el host que corre el contenedor de postgres
-     ELASTIC_HOST_PORT = puerto que se expondra en el host que corre el contenedor de elastic
+    # HOST PORTS
+    SERVER_HOST_PORT = puerto que se expondra en el host que corre el contenedor de la aplicacion
+    MONGO_HOST_PORT = puerto que se expondra en el host que corre el contener de mongo
+    POSTGRES_HOST_PORT = puerto que se expondra en el host que corre el contenedor de postgres
+    ELASTIC_HOST_PORT = puerto que se expondra en el host que corre el contenedor de elastic
+    LOGSTASH_HOST_PORT = puerto que se expondra en el host que corre el contenedor de logstash
 
-     # CSV
-     NAME_CSV_FILE = nombre del archivo csv sin la extensión
+    # CSV
+    NAME_CSV_FILE = nombre del archivo csv sin la extensión
     ```
 
     > En el proyecto se encuentra un archivo .env con valores de ejemplo y funcionales.
