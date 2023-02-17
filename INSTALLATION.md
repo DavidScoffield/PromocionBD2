@@ -1,44 +1,55 @@
 # Guia de instalación y ejecucion de la aplicación
 
 `Los comandos indicados a continuación deben correrse desde el directorio raíz del proyecto`
+
 ## 1. Instalacion del ambiente
 
-1. Copiar el archivo CSV (Ejemplo: US_Accidents_Dec19.csv) al directorio /initialization/csv
+1.  Copiar el archivo CSV (Ejemplo: US_Accidents_Dec19.csv) al directorio /initialization/csv
 
-2. Ingresar en el archivo .env, como valor de la variable NAME_CSV_FILE, el nombre de archivo del csv sin la extensión.
+2.  Ingresar en el archivo .env, como valor de la variable NAME_CSV_FILE, el nombre de archivo del csv sin la extensión.
 
-   > A continuacion se explican los valores de configuracion modificables en el archivo .env:
+    > A continuacion se explican los valores de configuracion modificables en el archivo .env:
 
-   ```sh
-    # Postgres configuration
-    POSTGRES_DB : nombre de la base de datos de postgres
-    POSTGRES_USER : nombre de usuario de postgres
-    POSTGRES_PASSWORD : contraseña de postgres
+    ```sh
+     # Postgres configuration
+     POSTGRES_DB = nombre de la base de datos de postgres
+     POSTGRES_USER = nombre de usuario de postgres
+     POSTGRES_PASSWORD = contraseña de postgres
 
-    # Mongo configuration
-    MONGO_DB : nombre de la base de datos de mongo
-    MONGO_USER : nombre de usuario de mongo
-    MONGO_PASSWORD : contraseña de mongo
+     # Mongo configuration
+     MONGO_DB = nombre de la base de datos de mongo
+     MONGO_USER = nombre de usuario de mongo
+     MONGO_PASSWORD = contraseña de mongo
 
-    # HOST PORTS
-    SERVER_HOST_PORT : puerto que se expondra en el host que corre el contenedor de la aplicacion
-    MONGO_HOST_PORT : puerto que se expondra en el host que corre el contener de mongo
-    POSTGRES_HOST_PORT : puerto que se expondra en el host que corre el contenedor de postgres
+     # HOST PORTS
+     SERVER_HOST_PORT = puerto que se expondra en el host que corre el contenedor de la aplicacion
+     MONGO_HOST_PORT = puerto que se expondra en el host que corre el contener de mongo
+     POSTGRES_HOST_PORT = puerto que se expondra en el host que corre el contenedor de postgres
+     ELASTIC_HOST_PORT = puerto que se expondra en el host que corre el contenedor de elastic
 
-    # CSV
-    NAME_CSV_FILE : nombre del archivo csv sin la extensión
-   ```
+     # CSV
+     NAME_CSV_FILE = nombre del archivo csv sin la extensión
+    ```
 
-3. Ejecutar
+    > En el proyecto se encuentra un archivo .env con valores de ejemplo y funcionales.
 
-   ```
-   docker-compose up -d
-   ```
-4. Una vez creada la imagen y los contenedores, la importación del archivo csv a las bases de datos se realizará en segundo plano.
-Podrá seguir su estado con el siguiente comandos:
+3.  Ejecutar
 
     ```
-    docker logs {nombre_contenedor}
+    docker-compose up -d
+    ```
+
+4.  Una vez creada la imagen y los contenedores, la importación del archivo csv a las bases de datos se realizará en segundo plano.
+    Podrá seguir su estado con el siguiente comandos:
+
+        ```
+        docker logs {nombre_contenedor}
+        ```
+
+    4.1 Para ver el caso de `elacticsearch` podrá ver la cantidad de registros cargados hasta el momento ejecutando lo siguiente:
+
+    ```sh
+    bash initialization/logstash/logs/count.sh
     ```
 
 ## 2. Dar de baja ambiente
@@ -48,6 +59,7 @@ Podrá seguir su estado con el siguiente comandos:
    ```
    docker-compose down
    ```
+
 ## 3. Cargar base de datos MANUALMENTE
 
 ### 3.1 Carga de la base de datos de _Mongo_
@@ -68,6 +80,17 @@ docker exec  -it {nombre_contenedor_mongo} bash /docker-entrypoint-initdb.d/mong
 
 ```sh
 docker exec  -it {nombre_contenedor_postgres} bash /docker-entrypoint-initdb.d/postgresDataInit.sh
+```
+
+### 3.3 Cargar base de datos de _Elasticsearch_
+
+(con el contenedor de _elasticsearch_ y _logstash_ iniciados)
+
+#### Ejecutar:
+
+```sh
+docker-compose rm -sf logstash
+docker-compose up -d logstash
 ```
 
 ## 4. Posibles soluciones a problemas
@@ -100,6 +123,14 @@ docker exec  -it {nombre_contenedor_postgres} bash /docker-entrypoint-initdb.d/p
 
     ( {nombre_volumen_postgres} = ${nombre_carpeta_del_proyecto}\_bd-postgres ) Ejemplo: promocionbd2_bd-postgres
 
+    **Elasticsearch:**
+
+    ```sh
+    docker volume rm {nombre_volumen_elasticsearch}
+    ```
+
+    ( {nombre_volumen_elasticsearch} = ${nombre_carpeta_del_proyecto}\_bd-elasticsearch ) Ejemplo: promocionbd2_bd-elasticsearch
+
 3.  Levantar los contenedores:
 
     ```sh
@@ -111,3 +142,7 @@ docker exec  -it {nombre_contenedor_postgres} bash /docker-entrypoint-initdb.d/p
 1. Mantener los contenedores levantados, o levantarlos en caso de que esten detenidos.
 
 2. Cargar las bases de datos manualmente como se describe en el [punto 3](#3-cargar-base-de-datos-manualmente).
+
+```
+
+```
