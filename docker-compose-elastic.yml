@@ -31,7 +31,7 @@ services:
       - ./initialization/csv:/resources/csv/
     environment:
       - NAME_CSV_FILE=$NAME_CSV_FILE
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:$ELASTIC_HOST_PORT
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - 'LS_JAVA_OPTS=-Xmx256m -Xms256m'
       - pipeline.workers=1
     networks:
@@ -48,7 +48,7 @@ services:
       - 5601:5601
     environment:
       - NAME_CSV_FILE=$NAME_CSV_FILE
-      - 'ELASTICSEARCH_HOSTS=http://elasticsearch:$ELASTIC_HOST_PORT'
+      - 'ELASTICSEARCH_HOSTS=http://elasticsearch:9200'
     networks:
       - elastic-net
     depends_on:
