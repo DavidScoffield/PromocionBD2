@@ -29,6 +29,15 @@ public interface AccidentService {
     public List<Accident> getAccidentsNearLocation(Double longitude, Double latitude, Double radius) throws Exception;
 
     /**
+     * Retorna los accidentes ocurridos a cierta distancia de un punto geografico, usando la base de datos Elasticsearch
+     * @param longitude coordenada correspondiente a la longitud del punto geografico
+     * @param latitude coordenada correspondiente a la latitud del punto geografico
+     * @param radius radio de busqueda
+     * @return lista de Accident
+     */
+    public List<Accident> getAccidentsNearLocationWithElasticsearch(Double longitude, Double latitude, Double radius) throws Exception;
+
+    /**
      * Retorna la distancia promedio desde el inicio al fin del accidente
      * @return distancia promedio
      * @throws Exception

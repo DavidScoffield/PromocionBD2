@@ -107,6 +107,17 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
+    public List<Accident> getAccidentsNearLocationWithElasticsearch(Double longitude, Double latitude, Double radius) throws Exception {
+        checkCoordinates(latitude, longitude);
+        checkRadius(radius);
+
+        Point point = new Point(longitude, latitude);
+        Distance distance = new Distance(radius, Metrics.KILOMETERS);
+        List<Accident> accidents = elasticsearchAccidentRepository.findAllByLocationNear(point, distance);
+        return accidents;
+    }
+
+    @Override
     public HashMap<String, Object> getAverageDistance() throws Exception {
         HashMap<String, Object> result = new HashMap<>();
 

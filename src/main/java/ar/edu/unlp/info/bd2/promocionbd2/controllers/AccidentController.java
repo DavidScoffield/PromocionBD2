@@ -46,7 +46,7 @@ public class AccidentController {
     ) throws Exception {     
         return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAccidentsBetweenDates(start, end, page, perPage));
     }
-
+    
     @GetMapping(value = "accidents/near", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAccidentsNearLocation(
             @RequestParam(value = "longitude") Double longitude,
@@ -54,6 +54,15 @@ public class AccidentController {
             @RequestParam(value = "radius") Double radius
     ) throws Exception {
         return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAccidentsNearLocation(longitude, latitude, radius));
+    }
+
+    @GetMapping(value = "accidents/nearLocation", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getAccidentsNearLocationWithElasticsearch(
+            @RequestParam(value = "longitude") Double longitude,
+            @RequestParam(value = "latitude") Double latitude,
+            @RequestParam(value = "radius") Double radius
+    ) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAccidentsNearLocationWithElasticsearch(longitude, latitude, radius));
     }
 
     @GetMapping(value = "accidents/average-distance", produces = MediaType.APPLICATION_JSON_VALUE)

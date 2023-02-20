@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -225,6 +226,7 @@ public class Accident {
     @Field(name = "Astronomical_Twilight")
     private String astronomicalTwilight;
 
+    @GeoPointField
     @Transient
     private @GeoSpatialIndexed Point location;
 
