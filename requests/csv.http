@@ -5,8 +5,13 @@ GET http://localhost:8080/accidents/between-dates?start=08-02-2016&end=09-02-201
 
 ###
 // Retorna lista de accidentes ocurridos a una distancia (radius) en km de un punto geográfico
-// dado por las coordenadas longitude y latitude
+// dado por las coordenadas longitude y latitude [ mongo ]
 GET http://localhost:8080/accidents/near?longitude=-84.058723&latitude=39.865147&radius=10 HTTP/1.1
+
+###
+// Retorna lista de accidentes ocurridos a una distancia (radius) en km de un punto geográfico
+// dado por las coordenadas longitude y latitude [ elastic ]
+GET http://localhost:8080/accidents/nearLocation?longitude=-84.058723&latitude=39.865147&radius=10 HTTP/1.1
 
 ###
 // Retorna la distancia promedio (en metros) desde el inicio al fin del accidente
