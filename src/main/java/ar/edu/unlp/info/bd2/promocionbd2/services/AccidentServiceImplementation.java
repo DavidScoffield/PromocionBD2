@@ -165,6 +165,20 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
+    public HashMap<Object, Object> getAverageDistanceToCloseAccidents2(int page, int perPage) throws Exception {
+        page--;
+        checkPaginationParams(page, perPage);
+
+        Page<Accident> accidentsPage = elasticsearchAccidentRepository.findAllBy(PageRequest.of(page, perPage));
+        HashMap<Object, Object> result = new HashMap<>();
+
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {return null;})));
+        result.put("content", elasticsearchAccidentRepository.getAverageDistanceToNearAccidents(accidentsPage.getContent()));
+        
+        return result;
+    }
+
+    @Override
     public HashMap<String, Object> getCommonAccidentConditions() throws Exception {
         Pageable pageable = PageRequest.of(0, 1);
         int totalResults = 5;

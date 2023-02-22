@@ -67,12 +67,21 @@ public interface AccidentService {
     HashMap<String, Object> getCommonAccidentConditions() throws Exception;
 
     /**
-     * Retorna la distancia promedio (en km) de cada accidente a los 10 mas cercanos
+     * Retorna la distancia promedio (en km) de cada accidente a los 10 mas cercanos [mongo]
      * @param page página solicitada
      * @param perPage cantidad de elementos por página
      * @return un HashMap con una clave que posee información sobre la página y otra clave con el resultado obtenido
      * @throws Exception
      */
     HashMap<Object, Object> getAverageDistanceToCloseAccidents(int page, int perPage) throws Exception;
+
+    /**
+     * Retorna la distancia promedio (en km) de cada accidente a los 10 mas cercanos [elastic]
+     * @param page página solicitada
+     * @param perPage cantidad de elementos por página
+     * @return un HashMap con una clave que posee información sobre la página y otra clave con el resultado obtenido
+     * @throws Exception
+     */
+    HashMap<Object, Object> getAverageDistanceToCloseAccidents2(int page, int perPage) throws Exception;
 
 }

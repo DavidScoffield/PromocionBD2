@@ -94,6 +94,14 @@ public class AccidentController {
         return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAverageDistanceToCloseAccidents(page, perPage));
     }
 
+    @GetMapping(value = "accidents/near/average-distance2")
+    public ResponseEntity getAverageDistanceToCloseAccidents2(
+        @RequestParam(value = "page", defaultValue = "1") Integer page,
+        @RequestParam(value = "perPage", defaultValue = "10") Integer perPage
+    ) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAverageDistanceToCloseAccidents2(page, perPage));
+    }
+
     @GetMapping(value = "accidents/getCommonConditions", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getCommonAccidentConditions() throws Exception {
         return ResponseEntity.status(HttpStatus.OK).body(accidentService.getCommonAccidentConditions());
