@@ -1,12 +1,14 @@
 package ar.edu.unlp.info.bd2.promocionbd2.mongoRepositories;
 
-import ar.edu.unlp.info.bd2.promocionbd2.dto.SummarizedAccidentRepresentation;
+import java.util.List;
+import java.util.Collection;
+
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 public interface CustomMongoAccidentRepository {
+    NearAccidentRepresentation[] getAverageDistanceToNearAccidents(List<Accident> accidents);
 
-    public List<SummarizedAccidentRepresentation> getAverageDistanceToNearAccidents(Stream<Accident> accidentStream);
+    Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount);
 }
