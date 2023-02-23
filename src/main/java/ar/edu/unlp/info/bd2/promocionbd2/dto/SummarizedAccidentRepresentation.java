@@ -1,8 +1,9 @@
 package ar.edu.unlp.info.bd2.promocionbd2.dto;
 
+import org.springframework.data.geo.Point;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.geo.Point;
 
 @Getter
 @Setter
@@ -17,4 +18,4 @@ public class SummarizedAccidentRepresentation {
         this.location = location;
         this.averageDistance = averageDistance;
     }
-    }
+}
