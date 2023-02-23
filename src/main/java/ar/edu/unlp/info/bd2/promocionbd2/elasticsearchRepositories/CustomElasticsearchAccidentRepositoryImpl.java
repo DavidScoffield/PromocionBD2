@@ -24,7 +24,7 @@ public class CustomElasticsearchAccidentRepositoryImpl implements CustomElastics
     private ElasticsearchOperations elasticsearchOperations;
 
     public NearAccidentRepresentation getAverageDistanceToAccident(Accident accident) {
-        GeoPoint location = accident.getGeoPoint();
+        GeoPoint location = accident.geoPoint();
 
         QueryBuilder query = QueryBuilders.boolQuery()
                 .filter(QueryBuilders.geoDistanceQuery("location").point(location).distance("10km"))
@@ -39,7 +39,7 @@ public class CustomElasticsearchAccidentRepositoryImpl implements CustomElastics
                 .collect(Collectors.toList());
 
         Double averageDistance = accidents.stream()
-                .mapToDouble(a -> distance(a.getContent().getGeoPoint(), location))
+                .mapToDouble(a -> distance(a.getContent().geoPoint(), location))
                 .average()
                 .orElse(0.0);
 

@@ -29,7 +29,7 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
     private MongoTemplate mongoTemplate;
 
     private NearAccidentRepresentation getAverageDistanceToAccident(Accident accident) {
-        NearQuery nearQuery = NearQuery.near(accident.getLocation())
+        NearQuery nearQuery = NearQuery.near(accident.location())
                 .spherical(true)
                 .limit(10)
                 .query(new Query().addCriteria(Criteria.where("ID").ne(accident.getId())))
