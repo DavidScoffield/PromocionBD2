@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.elasticsearch.common.geo.GeoPoint;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import org.springframework.data.geo.Point;
@@ -232,5 +233,9 @@ public class Accident {
 
     public Point getLocation() {
         return this.location;
+    }
+
+    public GeoPoint getGeoPoint() {
+        return new GeoPoint(this.getLocation().getY(), this.getLocation().getX());
     }
 }
