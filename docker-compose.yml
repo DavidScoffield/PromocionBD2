@@ -12,6 +12,8 @@ services:
     depends_on:
       - mongodb
       - postgres
+      - elasticsearch
+      - logstash
     environment:
       SERVER_PORT: 8000
       SPRING_PROFILES_ACTIVE: prod
