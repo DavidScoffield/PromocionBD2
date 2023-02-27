@@ -16,6 +16,8 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,9 +29,9 @@ import lombok.Setter;
 @org.springframework.data.elasticsearch.annotations.Document(indexName="accident")
 public class Accident {
 
-    @Id
     @Column(name = "id")
     @Field(name = "ID")
+    @Id
     private String id;
 
     @Column(name = "source")
@@ -227,15 +229,16 @@ public class Accident {
     @Field(name = "Astronomical_Twilight")
     private String astronomicalTwilight;
 
+    @JsonIgnore
     @GeoPointField
     @Transient
     private @GeoSpatialIndexed Point location;
 
-    public Point getLocation() {
+    public Point location() {
         return this.location;
     }
 
-    public GeoPoint getGeoPoint() {
-        return new GeoPoint(this.getLocation().getY(), this.getLocation().getX());
+    public GeoPoint geoPoint() {
+        return new GeoPoint(this.startLat, this.startLng);
     }
 }
