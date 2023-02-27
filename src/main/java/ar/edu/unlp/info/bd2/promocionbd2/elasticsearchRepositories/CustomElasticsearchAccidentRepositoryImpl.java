@@ -24,10 +24,10 @@ public class CustomElasticsearchAccidentRepositoryImpl implements CustomElastics
     private ElasticsearchOperations elasticsearchOperations;
 
     public NearAccidentRepresentation getAverageDistanceToAccident(Accident accident) {
-        GeoPoint location = accident.geoPoint();
+        GeoPoint geopoint = accident.geoPoint();
 
         QueryBuilder query = QueryBuilders.boolQuery()
-                .filter(QueryBuilders.geoDistanceQuery("location").point(location).distance("10km"))
+                .filter(QueryBuilders.geoDistanceQuery("geopoint").point(geopoint).distance("10km"))
                 .mustNot(QueryBuilders.termQuery("id", accident.getId()));
 
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
@@ -39,7 +39,7 @@ public class CustomElasticsearchAccidentRepositoryImpl implements CustomElastics
                 .collect(Collectors.toList());
 
         Double averageDistance = accidents.stream()
-                .mapToDouble(a -> distance(a.getContent().geoPoint(), location))
+                .mapToDouble(a -> distance(a.getContent().geoPoint(), geopoint))
                 .average()
                 .orElse(0.0);
 
@@ -78,7 +78,7 @@ public class CustomElasticsearchAccidentRepositoryImpl implements CustomElastics
         ExecutorService executorService = Executors.newFixedThreadPool(Math.min(totalResults, 100));
 
         for (int i = 0; i < totalResults; i++) {
-            final int j = i; 
+            final int j = i;
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -90,7 +90,8 @@ public class CustomElasticsearchAccidentRepositoryImpl implements CustomElastics
         }
 
         executorService.shutdown();
-        while (!executorService.isTerminated()) {}
+        while (!executorService.isTerminated()) {
+        }
 
         return result;
     }

@@ -10,10 +10,11 @@ import org.springframework.data.domain.Pageable;
 
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
-public interface ElasticsearchAccidentRepository extends ElasticsearchRepository<Accident, String>, CustomElasticsearchAccidentRepository {
+public interface ElasticsearchAccidentRepository
+        extends ElasticsearchRepository<Accident, String>, CustomElasticsearchAccidentRepository {
 
-    List<Accident> findAllByLocationNear(Point point, Distance distance);
+    List<Accident> findAllByGeopointNear(Point point, Distance distance);
 
     Page<Accident> findAllBy(Pageable pageable);
-    
+
 }

@@ -66,7 +66,8 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
-    public HashMap<Object, Object> getAccidentsBetweenDates(String startDate, String endDate, int page, int perPage) throws Exception {
+    public HashMap<Object, Object> getAccidentsBetweenDates(String startDate, String endDate, int page, int perPage)
+            throws Exception {
         Date start, end;
 
         try {
@@ -80,10 +81,13 @@ public class AccidentServiceImplementation implements AccidentService {
         page--;
         checkPaginationParams(page, perPage);
 
-        Page<Accident> accidentsPage = postgresAccidentRepository.findAllByStartTimeBetween(start, end, PageRequest.of(page, perPage));
+        Page<Accident> accidentsPage = postgresAccidentRepository.findAllByStartTimeBetween(start, end,
+                PageRequest.of(page, perPage));
         HashMap<Object, Object> result = new HashMap<>();
 
-        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {return null;})));
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
+            return null;
+        })));
         result.put("content", accidentsPage.getContent());
 
         return result;
@@ -107,13 +111,14 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
-    public List<Accident> getAccidentsNearLocationWithElasticsearch(Double longitude, Double latitude, Double radius) throws Exception {
+    public List<Accident> getAccidentsNearLocationWithElasticsearch(Double longitude, Double latitude, Double radius)
+            throws Exception {
         checkCoordinates(latitude, longitude);
         checkRadius(radius);
 
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radius, Metrics.KILOMETERS);
-        List<Accident> accidents = elasticsearchAccidentRepository.findAllByLocationNear(point, distance);
+        List<Accident> accidents = elasticsearchAccidentRepository.findAllByGeopointNear(point, distance);
         return accidents;
     }
 
@@ -133,7 +138,8 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
-    public Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) throws Exception {
+    public Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount)
+            throws Exception {
         if (amount < 1) {
             throw new Exception("Amount has to be greater than 0");
         }
@@ -158,9 +164,11 @@ public class AccidentServiceImplementation implements AccidentService {
         Page<Accident> accidentsPage = mongoAccidentRepository.findAllBy(PageRequest.of(page, perPage));
         HashMap<Object, Object> result = new HashMap<>();
 
-        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {return null;})));
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
+            return null;
+        })));
         result.put("content", mongoAccidentRepository.getAverageDistanceToNearAccidents(accidentsPage.getContent()));
-        
+
         return result;
     }
 
@@ -172,9 +180,12 @@ public class AccidentServiceImplementation implements AccidentService {
         Page<Accident> accidentsPage = elasticsearchAccidentRepository.findAllBy(PageRequest.of(page, perPage));
         HashMap<Object, Object> result = new HashMap<>();
 
-        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {return null;})));
-        result.put("content", elasticsearchAccidentRepository.getAverageDistanceToNearAccidents(accidentsPage.getContent()));
-        
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
+            return null;
+        })));
+        result.put("content",
+                elasticsearchAccidentRepository.getAverageDistanceToNearAccidents(accidentsPage.getContent()));
+
         return result;
     }
 
@@ -187,12 +198,12 @@ public class AccidentServiceImplementation implements AccidentService {
         HashMap<String, Object> hashMap = new HashMap<>();
 
         for (int i = 0; i < totalResults; i++) {
-            final int j = i; 
+            final int j = i;
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     Object result = null;
-                    switch(j) {
+                    switch (j) {
                         case 0:
                             result = postgresAccidentRepository.getCommonAccidentWeatherCondition(pageable);
                             break;
@@ -221,7 +232,8 @@ public class AccidentServiceImplementation implements AccidentService {
             for (Thread thread : threads) {
                 thread.join();
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         hashMap.put("commonAccidentWeatherCondition", results[0]);
         hashMap.put("commonAccidentWindDirection", results[1]);
