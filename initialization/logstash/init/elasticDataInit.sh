@@ -9,7 +9,7 @@ until $finished; do
   {
     "mappings": {
       "properties": {
-        "location": { "type":"geo_point" },
+        "geopoint": { "type":"geo_point" },
         "start_time": {
           "type": "date",
           "format": "yyyy-MM-dd HH:mm:ss"
