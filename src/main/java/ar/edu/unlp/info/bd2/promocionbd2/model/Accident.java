@@ -26,7 +26,7 @@ import lombok.Setter;
 @Entity
 @Document(collection = "accident")
 @Table(name = "accident")
-@org.springframework.data.elasticsearch.annotations.Document(indexName="accident")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "accident")
 public class Accident {
 
     @Column(name = "id")
@@ -36,6 +36,7 @@ public class Accident {
 
     @Column(name = "source")
     @Field(name = "Source")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "source")
     private String source;
 
     @Column(name = "tmc")
@@ -48,32 +49,37 @@ public class Accident {
 
     @Column(name = "start_time")
     @Field(name = "Start_Time")
-    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss", name = "start_time")
     private Date startTime;
 
     @Column(name = "end_time")
     @Field(name = "End_Time")
-    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss", name = "end_time")
     private Date endTime;
 
     @Column(name = "start_lat")
     @Field(name = "Start_Lat")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Double, name = "start_lat")
     private Double startLat;
 
     @Column(name = "start_lng")
     @Field(name = "Start_Lng")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Double, name = "start_lng")
     private Double startLng;
 
     @Column(name = "end_lat")
     @Field(name = "End_Lat")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Double, name = "end_lat")
     private Double endLat;
 
     @Column(name = "end_lng")
     @Field(name = "End_Lng")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Double, name = "end_lng")
     private Double endLng;
 
     @Column(name = "distance")
     @Field(name = "Distance")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "distance_mi")
     private Double distance;
 
     @Column(name = "description")
@@ -118,19 +124,22 @@ public class Accident {
 
     @Column(name = "airport_code")
     @Field(name = "Airport_Code")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "airport_code")
     private String airportCode;
 
     @Column(name = "weather_timestamp")
     @Field(name = "Weather_Timestamp")
-    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss")
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, pattern = "yyyy-MM-dd HH:mm:ss", name = "weather_timestamp")
     private Date weatherTimestamp;
 
     @Column(name = "temperature")
     @Field(name = "Temperature")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "temperature_f")
     private Double temperature;
 
     @Column(name = "wind_chill")
     @Field(name = "Wind_Chill")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "wind_chill_f")
     private Double windChill;
 
     @Column(name = "humidity")
@@ -139,26 +148,32 @@ public class Accident {
 
     @Column(name = "pressure")
     @Field(name = "Pressure")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "pressure_in")
     private Double pressure;
 
     @Column(name = "visibility")
     @Field(name = "Visibility")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "visibility_mi")
     private Double visibility;
 
     @Column(name = "wind_direction")
     @Field(name = "Wind_Direction")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "wind_direction")
     private String windDirection;
 
     @Column(name = "wind_speed")
     @Field(name = "Wind_Speed")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "wind_speed_mph")
     private Double windSpeed;
 
     @Column(name = "precipitation")
     @Field(name = "Precipitation")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "precipitation_in")
     private Double precipitation;
 
     @Column(name = "weather_condition")
     @Field(name = "Weather_Condition")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "weather_condition")
     private String weatherCondition;
 
     @Column(name = "amenity")
@@ -175,6 +190,7 @@ public class Accident {
 
     @Column(name = "give_way")
     @Field(name = "Give_Way")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "give_way")
     private Boolean giveWay;
 
     @Column(name = "junction")
@@ -183,6 +199,7 @@ public class Accident {
 
     @Column(name = "no_exit")
     @Field(name = "No_Exit")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "no_exit")
     private Boolean noExit;
 
     @Column(name = "railway")
@@ -203,30 +220,37 @@ public class Accident {
 
     @Column(name = "traffic_calming")
     @Field(name = "Traffic_Calming")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "traffic_calming")
     private Boolean trafficCalming;
 
     @Column(name = "traffic_signal")
     @Field(name = "Traffic_Signal")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "traffic_signal")
     private Boolean trafficSignal;
 
     @Column(name = "turning_loop")
     @Field(name = "Turning_Loop")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "turning_loop")
     private Boolean turningLoop;
 
     @Column(name = "sunrise_sunset")
     @Field(name = "Sunrise_Sunset")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "sunrise_sunset")
     private String sunriseSunset;
 
     @Column(name = "civil_twilight")
     @Field(name = "Civil_Twilight")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "civil_twilight")
     private String civilTwilight;
 
     @Column(name = "nautical_twilight")
     @Field(name = "Nautical_Twilight")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "nautical_twilight")
     private String nauticalTwilight;
 
     @Column(name = "astronomical_twilight")
     @Field(name = "Astronomical_Twilight")
+    @org.springframework.data.elasticsearch.annotations.Field(name = "astronomical_twilight")
     private String astronomicalTwilight;
 
     @JsonIgnore
