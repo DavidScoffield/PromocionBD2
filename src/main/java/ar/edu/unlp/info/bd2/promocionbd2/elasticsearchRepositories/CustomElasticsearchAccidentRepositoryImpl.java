@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -13,10 +15,14 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
+
+import org.elasticsearch.common.unit.DistanceUnit;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
+
 
 public class CustomElasticsearchAccidentRepositoryImpl implements CustomElasticsearchAccidentRepository {
 
@@ -26,49 +32,30 @@ public class CustomElasticsearchAccidentRepositoryImpl implements CustomElastics
     public NearAccidentRepresentation getAverageDistanceToAccident(Accident accident) {
         GeoPoint geopoint = accident.geoPoint();
 
-        QueryBuilder query = QueryBuilders.boolQuery()
-                .filter(QueryBuilders.geoDistanceQuery("geopoint").point(geopoint).distance("10km"))
+        QueryBuilder queryBuilder = QueryBuilders.boolQuery()
+                .filter(QueryBuilders.geoDistanceQuery("geopoint").point(geopoint).distance("5km"))
                 .mustNot(QueryBuilders.termQuery("id", accident.getId()));
 
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(query)
-                .withPageable(PageRequest.of(0, 10))
-                .build();
-
-        List<SearchHit<Accident>> accidents = elasticsearchOperations.search(searchQuery, Accident.class).get()
-                .collect(Collectors.toList());
-
-        Double averageDistance = accidents.stream()
-                .mapToDouble(a -> distance(a.getContent().geoPoint(), geopoint))
-                .average()
-                .orElse(0.0);
+        .withQuery(queryBuilder)
+        .withSort(SortBuilders.geoDistanceSort("geopoint", geopoint).order(SortOrder.ASC).unit(DistanceUnit.KILOMETERS))
+        .withPageable(PageRequest.of(0, 10))
+        .build();
+        
+        SearchHits<Accident> hits = elasticsearchOperations.search(searchQuery, Accident.class, IndexCoordinates.of("accident"));
+        
+        double totalDistance = 0.0;
+        int totalAccidents = 0;
+        for (SearchHit<Accident> hit : hits) {
+            totalDistance += (double) hit.getSortValues().get(0);
+            totalAccidents += 1;
+        }        
 
         NearAccidentRepresentation result = new NearAccidentRepresentation();
         result.setID(accident.getId());
-        result.setAverageDistance(averageDistance);
+        result.setAverageDistance(totalDistance / totalAccidents);
 
         return result;
-    }
-
-    public static double distance(GeoPoint point1, GeoPoint point2) {
-        // método para calcular la distancia entre dos puntos
-
-        double lat1, lon1, lat2, lon2;
-        lat1 = point1.getLat();
-        lon1 = point1.getLon();
-        lat2 = point2.getLat();
-        lon2 = point2.getLon();
-
-        final double R = 6371;
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c;
-
-        return distance;
     }
 
     @Override
