@@ -23,25 +23,34 @@ import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation
 import ar.edu.unlp.info.bd2.promocionbd2.dto.TotalAccidentsInLocationRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
+
 public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRepository {
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
     private NearAccidentRepresentation getAverageDistanceToAccident(Accident accident) {
-        NearQuery nearQuery = NearQuery.near(accident.location())
+        NearQuery nearQuery = NearQuery.near(accident.location(), Metrics.KILOMETERS)
                 .spherical(true)
                 .limit(10)
-                .query(new Query().addCriteria(Criteria.where("ID").ne(accident.getId())))
-                .inKilometers();
+                .maxDistance(5.0)
+                .query(new Query().addCriteria(Criteria.where("ID").ne(accident.getId())));
 
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.geoNear(nearQuery,"calculatedDistance"),
-                Aggregation.group().avg("calculatedDistance").as("averageDistance"));
+                                        Aggregation.geoNear(nearQuery,"calculatedDistance"),
+                                        Aggregation.group().avg("calculatedDistance").as("averageDistance"));              
 
         AggregationResults<NearAccidentRepresentation> results = mongoTemplate.aggregate(aggregation,"accident", NearAccidentRepresentation.class);
 
-        NearAccidentRepresentation res = results.getMappedResults().get(0);
+        List<NearAccidentRepresentation> mappedResults = results.getMappedResults();
+        NearAccidentRepresentation res;
+        if (!mappedResults.isEmpty()) {
+            res = mappedResults.get(0);
+        } else {
+            res = new NearAccidentRepresentation();
+            res.setAverageDistance(0.0);
+        }
+
         res.setID(accident.getId());
 
         return res;
