@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
-import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
 public interface AccidentService {
 
@@ -17,7 +16,7 @@ public interface AccidentService {
      * @param perPage cantidad de elementos por página
      * @return un HashMap con una clave que posee información sobre la página y otra clave con el resultado obtenido
      */
-    public HashMap<Object, Object> getAccidentsBetweenDates(String start, String end, int page, int perPage) throws Exception;
+    HashMap<Object, Object> getAccidentsBetweenDates(String start, String end, int page, int perPage) throws Exception;
 
     /**
      * Retorna los accidentes ocurridos a cierta distancia de un punto geografico
@@ -26,7 +25,7 @@ public interface AccidentService {
      * @param radius radio de busqueda
      * @return lista de Accident
      */
-    public List<Accident> getAccidentsNearLocation(Double longitude, Double latitude, Double radius) throws Exception;
+    HashMap<String, Object> getAccidentsNearLocation(int page, int perPage, Double longitude, Double latitude, Double radius) throws Exception;
 
     /**
      * Retorna los accidentes ocurridos a cierta distancia de un punto geografico, usando la base de datos Elasticsearch
@@ -35,7 +34,7 @@ public interface AccidentService {
      * @param radius radio de busqueda
      * @return lista de Accident
      */
-    public List<Accident> getAccidentsNearLocationWithElasticsearch(Double longitude, Double latitude, Double radius) throws Exception;
+    HashMap<String, Object> getAccidentsNearLocationWithElasticsearch(int page, int perPage, Double longitude, Double latitude, Double radius) throws Exception;
 
     /**
      * Retorna la distancia promedio desde el inicio al fin del accidente
@@ -51,13 +50,13 @@ public interface AccidentService {
      * @return lista que indica el punto, la cantidad de accidentes en el punto, 
      *         la cantidad de accidentes cercanos y la severidad total de los accidentes
      */
-    public Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) throws Exception;
+    Collection<NearAccidentsSeverityRepresentation> getMostDangerousPoints(Double radius, Integer amount) throws Exception;
 
     /**
      * Retorna una lista con los nombres de las 5 calles con mas accidentes
      * @return lista de String
      */
-    public List<String> getFiveStreetsWithMostAccidents() throws Exception;
+    List<String> getFiveStreetsWithMostAccidents() throws Exception;
 
     /**
      * Retorna las condiciones más comunes en los accidentes

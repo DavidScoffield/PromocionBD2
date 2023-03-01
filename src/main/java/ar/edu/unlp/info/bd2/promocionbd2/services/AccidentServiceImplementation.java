@@ -5,14 +5,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.GeoResult;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
@@ -94,32 +93,44 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
-    public List<Accident> getAccidentsNearLocation(Double longitude, Double latitude, Double radius) throws Exception {
+    public HashMap<String, Object> getAccidentsNearLocation(int page, int perPage, Double longitude, Double latitude, Double radius) throws Exception {
         checkCoordinates(latitude, longitude);
         checkRadius(radius);
+        page--;
+        checkPaginationParams(page, perPage);
 
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radius, Metrics.KILOMETERS);
+        Page<Accident> accidentsPage = mongoAccidentRepository.findAllByLocationNear(PageRequest.of(page, perPage, Sort.by("id")), point, distance);
+        HashMap<String, Object> result = new HashMap<>();
 
-        List<Accident> accidents = mongoAccidentRepository.findAllByLocationNear(point, distance)
-                .getContent()
-                .stream()
-                .map(GeoResult::getContent)
-                .collect(Collectors.toList());
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
+            return null;
+        })));
+        result.put("content", accidentsPage.getContent());
 
-        return accidents;
+        return result;
     }
 
     @Override
-    public List<Accident> getAccidentsNearLocationWithElasticsearch(Double longitude, Double latitude, Double radius)
+    public HashMap<String, Object> getAccidentsNearLocationWithElasticsearch(int page, int perPage, Double longitude, Double latitude, Double radius)
             throws Exception {
         checkCoordinates(latitude, longitude);
         checkRadius(radius);
+        page--;
+        checkPaginationParams(page, perPage);
 
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radius, Metrics.KILOMETERS);
-        List<Accident> accidents = elasticsearchAccidentRepository.findAllByGeopointNear(point, distance);
-        return accidents;
+        Page<Accident> accidentsPage = elasticsearchAccidentRepository.findAllByGeopointNear(PageRequest.of(page, perPage), point, distance);
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
+            return null;
+        })));
+        result.put("content", accidentsPage.getContent());
+
+        return result;
     }
 
     @Override

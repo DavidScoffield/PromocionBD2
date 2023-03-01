@@ -11,7 +11,7 @@ import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
 public interface MongoAccidentRepository extends MongoRepository<Accident, String>, CustomMongoAccidentRepository {
 
-    GeoResults<Accident> findAllByLocationNear(Point point, Distance distance);
+    Page<Accident> findAllByLocationNear(Pageable pageable, Point point, Distance distance);
 
     Page<Accident> findAllBy(Pageable pageable);
 
