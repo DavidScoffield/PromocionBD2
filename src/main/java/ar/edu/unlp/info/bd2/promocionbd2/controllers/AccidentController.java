@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.TotalAccidentsInStreetRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.services.AccidentServiceImplementation;
 
 @RestController
@@ -59,7 +60,8 @@ public class AccidentController {
 
     /**
      * [Version Mongo] 
-     * 
+     * @param page la pagina solicitada
+     * @param perPage la cantidad de elementos por pagina. (Por defecto son 10)
      * @param longitude la longitud de la ubicacion del accidente. (Entre -180 y 180)
      * @param latitude la latitud de la ubicacion del accidente. (Entre 0 y 90)
      * @param radius el radio de la circunferencia que rodea al accidente. Medido en km.
@@ -69,16 +71,19 @@ public class AccidentController {
      */
     @GetMapping(value = "accidents/near", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAccidentsNearLocation(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "perPage", defaultValue = "10") Integer perPage,
             @RequestParam(value = "longitude") Double longitude,
             @RequestParam(value = "latitude") Double latitude,
             @RequestParam(value = "radius") Double radius
     ) throws Exception {
-        return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAccidentsNearLocation(longitude, latitude, radius));
+        return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAccidentsNearLocation(page, perPage, longitude, latitude, radius));
     }
 
     /**
      * [Version Elastic] 
-     * 
+     * @param page la pagina solicitada
+     * @param perPage la cantidad de elementos por pagina. (Por defecto son 10)
      * @param longitude la longitud de la ubicacion del accidente. (Entre -180 y 180)
      * @param latitude la latitud de la ubicacion del accidente. (Entre 0 y 90)
      * @param radius el radio de la circunferencia que rodea al accidente. Medido en km.
@@ -86,13 +91,15 @@ public class AccidentController {
      * que ocurrieron dentro del area especificada.
      * @throws Exception
      */
-    @GetMapping(value = "accidents/nearLocation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "accidents/near2", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAccidentsNearLocationWithElasticsearch(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "perPage", defaultValue = "10") Integer perPage,
             @RequestParam(value = "longitude") Double longitude,
             @RequestParam(value = "latitude") Double latitude,
             @RequestParam(value = "radius") Double radius
     ) throws Exception {
-        return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAccidentsNearLocationWithElasticsearch(longitude, latitude, radius));
+        return ResponseEntity.status(HttpStatus.OK).body(accidentService.getAccidentsNearLocationWithElasticsearch(page, perPage, longitude, latitude, radius));
     }
 
 
@@ -130,7 +137,7 @@ public class AccidentController {
      */
     @GetMapping(value = "accidents/dangerous-streets", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getFiveStreetsWithMostAccidents() throws Exception {
-        List<String> streets = accidentService.getFiveStreetsWithMostAccidents();
+        List<TotalAccidentsInStreetRepresentation> streets = accidentService.getFiveStreetsWithMostAccidents();
         return ResponseEntity.status(HttpStatus.OK).body(streets);
     }
 

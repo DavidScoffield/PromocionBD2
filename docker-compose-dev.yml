@@ -87,6 +87,8 @@ services:
       - bootstrap.memory_lock=true
       - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
       - xpack.security.enabled=false
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - ELASTIC_USERNAME=elastic
     networks:
       - elastic-net
 
@@ -98,6 +100,7 @@ services:
     volumes:
       - ./initialization/logstash/pipeline:/usr/share/logstash/pipeline/
       - ./initialization/csv:/resources/csv/
+      - ./initialization/logstash/init/:/usr/share/logstash/init/
     environment:
       - NAME_CSV_FILE=$NAME_CSV_FILE
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
@@ -109,6 +112,7 @@ services:
       - elasticsearch
     links:
       - elasticsearch
+    command: bash /usr/share/logstash/init/elasticDataInit.sh
 
   kivana:
     image: docker.elastic.co/kibana/kibana:8.4.1

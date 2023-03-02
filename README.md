@@ -41,13 +41,13 @@ A continuación describiremos los endpoints por medio de los cuales se pueden re
     >```
     >**(Version Elastic)**
     >```
-    >.../nearLocation?longitude=[P]&latitude=[Q]&radius=[N]
+    >.../near2?longitude=[P]&latitude=[Q]&radius=[N]
     >```
     >Ejemplos:
     >
     >- GET <http://localhost:8080/accidents/near?longitude=-84.058723&latitude=39.865147&radius=10> HTTP/1.1
     >
-    >- GET <http://localhost:8080/accidents/nearLocation?longitude=-84.058723&latitude=39.865147&radius=10> HTTP/1.1
+    >- GET <http://localhost:8080/accidents/near2?longitude=-84.058723&latitude=39.865147&radius=10> HTTP/1.1
 
 <br></br>
 
