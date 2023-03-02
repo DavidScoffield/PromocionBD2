@@ -18,6 +18,7 @@ import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.TotalAccidentsInStreetRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 import ar.edu.unlp.info.bd2.promocionbd2.mongoRepositories.MongoAccidentRepository;
 import ar.edu.unlp.info.bd2.promocionbd2.repositories.PostgresAccidentRepository;
@@ -154,8 +155,18 @@ public class AccidentServiceImplementation implements AccidentService {
     }
 
     @Override
-    public List<String> getFiveStreetsWithMostAccidents() throws Exception {
-        return postgresAccidentRepository.getFiveStreetsWithMostAccidents(PageRequest.of(0, 5)).getContent();
+    public List<TotalAccidentsInStreetRepresentation> getFiveStreetsWithMostAccidents() throws Exception {
+        List<Object[]> result = postgresAccidentRepository.getFiveStreetsWithMostAccidents(PageRequest.of(0, 5)).getContent();
+
+        List<TotalAccidentsInStreetRepresentation> list = new ArrayList<>();
+
+        for (Object[] row : result) {
+            String street = (String) row[0];
+            int totalAccidents = ((Number) row[1]).intValue();
+            list.add(new TotalAccidentsInStreetRepresentation(street, totalAccidents));
+        }
+
+        return list;
     }
 
     @Override

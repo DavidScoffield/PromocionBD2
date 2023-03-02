@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.TotalAccidentsInStreetRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.services.AccidentServiceImplementation;
 
 @RestController
@@ -136,7 +137,7 @@ public class AccidentController {
      */
     @GetMapping(value = "accidents/dangerous-streets", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getFiveStreetsWithMostAccidents() throws Exception {
-        List<String> streets = accidentService.getFiveStreetsWithMostAccidents();
+        List<TotalAccidentsInStreetRepresentation> streets = accidentService.getFiveStreetsWithMostAccidents();
         return ResponseEntity.status(HttpStatus.OK).body(streets);
     }
 

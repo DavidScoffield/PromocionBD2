@@ -2,9 +2,9 @@ package ar.edu.unlp.info.bd2.promocionbd2.services;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation;
+import ar.edu.unlp.info.bd2.promocionbd2.dto.TotalAccidentsInStreetRepresentation;
 
 public interface AccidentService {
 
@@ -58,9 +58,9 @@ public interface AccidentService {
 
     /**
      * Retorna una lista con los nombres de las 5 calles con mas accidentes
-     * @return lista de String
+     * @return lista con los nombres de las calles y la cantidad de accidentes
      */
-    List<String> getFiveStreetsWithMostAccidents() throws Exception;
+    Collection<TotalAccidentsInStreetRepresentation> getFiveStreetsWithMostAccidents() throws Exception;
 
     /**
      * Retorna las condiciones más comunes en los accidentes

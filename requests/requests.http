@@ -18,7 +18,7 @@ GET http://localhost:8080/accidents/near2?longitude=-84.058723&latitude=39.86514
 GET http://localhost:8080/accidents/average-distance HTTP/1.1
 
 ###
-// Retorna las 5 calles con más accidentes  [ MongoDB ]
+// Retorna las 5 calles con más accidentes  [ PostgreSQL ]
 GET http://localhost:8080/accidents/dangerous-streets HTTP/1.1
 
 ###
