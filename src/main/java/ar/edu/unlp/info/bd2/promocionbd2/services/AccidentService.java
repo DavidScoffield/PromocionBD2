@@ -23,6 +23,8 @@ public interface AccidentService {
      * @param longitude coordenada correspondiente a la longitud del punto geografico
      * @param latitude coordenada correspondiente a la latitud del punto geografico
      * @param radius radio de busqueda
+     * @param page página solicitada
+     * @param perPage cantidad de elementos por página
      * @return lista de Accident
      */
     HashMap<String, Object> getAccidentsNearLocation(int page, int perPage, Double longitude, Double latitude, Double radius) throws Exception;
@@ -32,6 +34,8 @@ public interface AccidentService {
      * @param longitude coordenada correspondiente a la longitud del punto geografico
      * @param latitude coordenada correspondiente a la latitud del punto geografico
      * @param radius radio de busqueda
+     * @param page página solicitada
+     * @param perPage cantidad de elementos por página
      * @return lista de Accident
      */
     HashMap<String, Object> getAccidentsNearLocationWithElasticsearch(int page, int perPage, Double longitude, Double latitude, Double radius) throws Exception;
