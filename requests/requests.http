@@ -1,34 +1,38 @@
 ###
 // Retorna lista de accidentes ocurridos entre las fechas start y end
-// Las fechas deben seguir el formato YYYY-MM-DD.
-GET http://localhost:8080/accidents/between-dates?start=08-02-2016&end=09-02-2016&page=7&perPage=10 HTTP/1.1
+// Las fechas deben seguir el formato DD-MM-YYYY  [ PostgreSQL ]
+GET http://localhost:8080/accidents/between-dates?start=08-02-2016&end=09-02-2016&page=1&perPage=10 HTTP/1.1
 
 ###
 // Retorna lista de accidentes ocurridos a una distancia (radius) en km de un punto geográfico
-// dado por las coordenadas longitude y latitude [ mongo ]
-GET http://localhost:8080/accidents/near?longitude=-84.058723&latitude=39.865147&radius=10 HTTP/1.1
+// dado por las coordenadas longitude y latitude  [ MongoDB ]
+GET http://localhost:8080/accidents/near?longitude=-84.058723&latitude=39.865147&radius=10&page=1&perPage=10 HTTP/1.1
 
 ###
 // Retorna lista de accidentes ocurridos a una distancia (radius) en km de un punto geográfico
-// dado por las coordenadas longitude y latitude [ elastic ]
-GET http://localhost:8080/accidents/nearLocation?longitude=-84.058723&latitude=39.865147&radius=10 HTTP/1.1
+// dado por las coordenadas longitude y latitude  [ Elasticsearch ]
+GET http://localhost:8080/accidents/near2?longitude=-84.058723&latitude=39.865147&radius=10&page=1&perPage=10 HTTP/1.1
 
 ###
-// Retorna la distancia promedio (en metros) desde el inicio al fin del accidente
+// Retorna la distancia promedio (en metros) desde el inicio al fin del accidente  [ PostgreSQL ]
 GET http://localhost:8080/accidents/average-distance HTTP/1.1
 
 ###
-// Retorna las 5 calles con más accidentes
+// Retorna las 5 calles con más accidentes  [ MongoDB ]
 GET http://localhost:8080/accidents/dangerous-streets HTTP/1.1
 
 ###
-// Retorna la distancia promedio (en km) de cada accidente a los 10 más cercanos
+// Retorna la distancia promedio (en km) de cada accidente a los 10 más cercanos  [ MongoDB ]
 GET http://localhost:8080/accidents/near/average-distance?page=1&perPage=10 HTTP/1.1
 
 ###
-// Retorna las condiciones más comunes en los accidentes
+// Retorna la distancia promedio (en km) de cada accidente a los 10 más cercanos  [ Elasticsearch ]
+GET http://localhost:8080/accidents/near/average-distance2?page=1&perPage=10 HTTP/1.1
+
+###
+// Retorna las condiciones más comunes en los accidentes  [ PostgreSQL ]
 GET http://localhost:8080/accidents/getCommonConditions HTTP/1.1
 
 ###
-// Retorna los puntos más peligrosos a partir de un determinado radio
+// Retorna los puntos más peligrosos a partir de un determinado radio  [ MongoDB ]
 GET http://localhost:8080/accidents/getMostDangerousPoints?radius=2&amount=5 HTTP/1.1

@@ -16,7 +16,7 @@ public interface AccidentService {
      * @param perPage cantidad de elementos por página
      * @return un HashMap con una clave que posee información sobre la página y otra clave con el resultado obtenido
      */
-    HashMap<Object, Object> getAccidentsBetweenDates(String start, String end, int page, int perPage) throws Exception;
+    HashMap<String, Object> getAccidentsBetweenDates(String start, String end, int page, int perPage) throws Exception;
 
     /**
      * Retorna los accidentes ocurridos a cierta distancia de un punto geografico
@@ -72,7 +72,7 @@ public interface AccidentService {
      * @return un HashMap con una clave que posee información sobre la página y otra clave con el resultado obtenido
      * @throws Exception
      */
-    HashMap<Object, Object> getAverageDistanceToCloseAccidents(int page, int perPage) throws Exception;
+    HashMap<String, Object> getAverageDistanceToCloseAccidents(int page, int perPage) throws Exception;
 
     /**
      * Retorna la distancia promedio (en km) de cada accidente a los 10 mas cercanos [elastic]
@@ -81,6 +81,6 @@ public interface AccidentService {
      * @return un HashMap con una clave que posee información sobre la página y otra clave con el resultado obtenido
      * @throws Exception
      */
-    HashMap<Object, Object> getAverageDistanceToCloseAccidents2(int page, int perPage) throws Exception;
+    HashMap<String, Object> getAverageDistanceToCloseAccidents2(int page, int perPage) throws Exception;
 
 }

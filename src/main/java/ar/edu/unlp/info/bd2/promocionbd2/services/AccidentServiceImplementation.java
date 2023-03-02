@@ -1,10 +1,12 @@
 package ar.edu.unlp.info.bd2.promocionbd2.services;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Comparator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -58,14 +60,30 @@ public class AccidentServiceImplementation implements AccidentService {
         }
     }
 
-    private void checkPaginationParams(Integer page, Integer perPage) throws Exception {
+    private Pageable checkPaginationParams(Integer page, Integer perPage) throws Exception {
+        page--;
         if (page < 0 || perPage < 1) {
             throw new Exception("Invalid pagination params");
         }
+        return PageRequest.of(page, perPage);
+    }
+
+    private HashMap<String, Object> getResults(Page<Accident> accidentsPage) {
+        List<Accident> accidentList = new ArrayList<>(accidentsPage.getContent());
+
+        accidentList.sort(Comparator.comparing(Accident::getId));
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
+            return null;
+        })));
+        result.put("content", accidentList);
+
+        return result;
     }
 
     @Override
-    public HashMap<Object, Object> getAccidentsBetweenDates(String startDate, String endDate, int page, int perPage)
+    public HashMap<String, Object> getAccidentsBetweenDates(String startDate, String endDate, int page, int perPage)
             throws Exception {
         Date start, end;
 
@@ -75,41 +93,25 @@ public class AccidentServiceImplementation implements AccidentService {
             start = formatter.parse(startDate);
             end = formatter.parse(endDate);
         } catch (Exception e) {
-            throw new Exception("Date must follow the pattern dd-mm-yyyy");
+            throw new Exception("Date must follow the pattern DD-MM-YYYY");
         }
-        page--;
-        checkPaginationParams(page, perPage);
 
         Page<Accident> accidentsPage = postgresAccidentRepository.findAllByStartTimeBetween(start, end,
-                PageRequest.of(page, perPage));
-        HashMap<Object, Object> result = new HashMap<>();
-
-        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
-            return null;
-        })));
-        result.put("content", accidentsPage.getContent());
-
-        return result;
+                                                                        checkPaginationParams(page, perPage));
+        
+        return getResults(accidentsPage);
     }
 
     @Override
     public HashMap<String, Object> getAccidentsNearLocation(int page, int perPage, Double longitude, Double latitude, Double radius) throws Exception {
         checkCoordinates(latitude, longitude);
         checkRadius(radius);
-        page--;
-        checkPaginationParams(page, perPage);
 
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radius, Metrics.KILOMETERS);
-        Page<Accident> accidentsPage = mongoAccidentRepository.findAllByLocationNear(PageRequest.of(page, perPage, Sort.by("id")), point, distance);
-        HashMap<String, Object> result = new HashMap<>();
-
-        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
-            return null;
-        })));
-        result.put("content", accidentsPage.getContent());
-
-        return result;
+        Page<Accident> accidentsPage = mongoAccidentRepository.findAllByLocationNear(checkPaginationParams(page, perPage), point, distance);
+        
+        return getResults(accidentsPage);
     }
 
     @Override
@@ -117,20 +119,12 @@ public class AccidentServiceImplementation implements AccidentService {
             throws Exception {
         checkCoordinates(latitude, longitude);
         checkRadius(radius);
-        page--;
-        checkPaginationParams(page, perPage);
 
         Point point = new Point(longitude, latitude);
         Distance distance = new Distance(radius, Metrics.KILOMETERS);
-        Page<Accident> accidentsPage = elasticsearchAccidentRepository.findAllByGeopointNear(PageRequest.of(page, perPage), point, distance);
-        HashMap<String, Object> result = new HashMap<>();
-
-        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
-            return null;
-        })));
-        result.put("content", accidentsPage.getContent());
-
-        return result;
+        Page<Accident> accidentsPage = elasticsearchAccidentRepository.findAllByGeopointNear(checkPaginationParams(page, perPage), point, distance);
+        
+        return getResults(accidentsPage);
     }
 
     @Override
@@ -162,40 +156,25 @@ public class AccidentServiceImplementation implements AccidentService {
 
     @Override
     public List<String> getFiveStreetsWithMostAccidents() throws Exception {
-        Pageable pageable = PageRequest.of(0, 5);
-
-        return postgresAccidentRepository.getFiveStreetsWithMostAccidents(pageable).getContent();
+        return postgresAccidentRepository.getFiveStreetsWithMostAccidents(PageRequest.of(0, 5)).getContent();
     }
 
     @Override
-    public HashMap<Object, Object> getAverageDistanceToCloseAccidents(int page, int perPage) throws Exception {
-        page--;
-        checkPaginationParams(page, perPage);
-
-        Page<Accident> accidentsPage = mongoAccidentRepository.findAllBy(PageRequest.of(page, perPage));
-        HashMap<Object, Object> result = new HashMap<>();
-
-        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
-            return null;
-        })));
+    public HashMap<String, Object> getAverageDistanceToCloseAccidents(int page, int perPage) throws Exception {
+        Page<Accident> accidentsPage = mongoAccidentRepository.findAllBy(checkPaginationParams(page, perPage));
+        
+        HashMap<String, Object> result = getResults(accidentsPage);
         result.put("content", mongoAccidentRepository.getAverageDistanceToNearAccidents(accidentsPage.getContent()));
 
         return result;
     }
 
     @Override
-    public HashMap<Object, Object> getAverageDistanceToCloseAccidents2(int page, int perPage) throws Exception {
-        page--;
-        checkPaginationParams(page, perPage);
+    public HashMap<String, Object> getAverageDistanceToCloseAccidents2(int page, int perPage) throws Exception {
+        Page<Accident> accidentsPage = elasticsearchAccidentRepository.findAllBy(checkPaginationParams(page, perPage));
 
-        Page<Accident> accidentsPage = elasticsearchAccidentRepository.findAllBy(PageRequest.of(page, perPage));
-        HashMap<Object, Object> result = new HashMap<>();
-
-        result.put("paginationInfo", getPaginationInfo(accidentsPage.map((Accident a) -> {
-            return null;
-        })));
-        result.put("content",
-                elasticsearchAccidentRepository.getAverageDistanceToNearAccidents(accidentsPage.getContent()));
+        HashMap<String, Object> result = getResults(accidentsPage);
+        result.put("content", elasticsearchAccidentRepository.getAverageDistanceToNearAccidents(accidentsPage.getContent()));
 
         return result;
     }

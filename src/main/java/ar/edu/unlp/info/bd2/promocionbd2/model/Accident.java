@@ -258,15 +258,8 @@ public class Accident {
     @Transient
     private @GeoSpatialIndexed Point location;
 
+    @JsonIgnore
     @Transient
     private GeoPoint geopoint;
-
-    public Point location() {
-        return this.location;
-    }
-
-    public GeoPoint geoPoint() {
-        return new GeoPoint(this.startLat, this.startLng);
-    }
 
 }

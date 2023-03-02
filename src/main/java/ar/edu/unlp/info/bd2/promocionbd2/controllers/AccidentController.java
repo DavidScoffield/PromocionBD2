@@ -90,7 +90,7 @@ public class AccidentController {
      * que ocurrieron dentro del area especificada.
      * @throws Exception
      */
-    @GetMapping(value = "accidents/nearLocation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "accidents/near2", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAccidentsNearLocationWithElasticsearch(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "perPage", defaultValue = "10") Integer perPage,

@@ -30,7 +30,7 @@ public class CustomElasticsearchAccidentRepositoryImpl implements CustomElastics
     private ElasticsearchOperations elasticsearchOperations;
 
     public NearAccidentRepresentation getAverageDistanceToAccident(Accident accident) {
-        GeoPoint geopoint = accident.geoPoint();
+        GeoPoint geopoint = accident.getGeopoint();
 
         QueryBuilder queryBuilder = QueryBuilders.boolQuery()
                 .filter(QueryBuilders.geoDistanceQuery("geopoint").point(geopoint).distance("5km"))
