@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.elasticsearch.common.geo.GeoDistance;
 import org.elasticsearch.common.geo.GeoPoint;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -33,27 +34,31 @@ public class CustomElasticsearchAccidentRepositoryImpl implements CustomElastics
         GeoPoint geopoint = accident.getGeopoint();
 
         QueryBuilder queryBuilder = QueryBuilders.boolQuery()
-                .filter(QueryBuilders.geoDistanceQuery("geopoint").point(geopoint).distance("5km"))
-                .mustNot(QueryBuilders.termQuery("id", accident.getId()));
+            .filter(QueryBuilders.geoDistanceQuery("geopoint")
+                .point(geopoint)
+                .distance("5km")
+                .geoDistance(GeoDistance.ARC))
+            .mustNot(QueryBuilders.termQuery("id", accident.getId()));
 
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-        .withQuery(queryBuilder)
-        .withSort(SortBuilders.geoDistanceSort("geopoint", geopoint).order(SortOrder.ASC).unit(DistanceUnit.KILOMETERS))
-        .withPageable(PageRequest.of(0, 10))
-        .build();
+            .withQuery(queryBuilder)
+            .withSort(SortBuilders.geoDistanceSort("geopoint", geopoint)
+                .order(SortOrder.ASC)
+                .unit(DistanceUnit.KILOMETERS)
+                .geoDistance(GeoDistance.ARC))
+            .withPageable(PageRequest.of(0, 10))
+            .build();
         
         SearchHits<Accident> hits = elasticsearchOperations.search(searchQuery, Accident.class, IndexCoordinates.of("accident"));
-        
-        double totalDistance = 0.0;
-        int totalAccidents = 0;
-        for (SearchHit<Accident> hit : hits) {
-            totalDistance += (double) hit.getSortValues().get(0);
-            totalAccidents += 1;
-        }        
+
+        double averageDistance = hits.stream()
+                                .mapToDouble(hit -> (double) hit.getSortValues().get(0))
+                                .average()
+                                .orElse(0.0);
 
         NearAccidentRepresentation result = new NearAccidentRepresentation();
         result.setID(accident.getId());
-        result.setAverageDistance(totalDistance / totalAccidents);
+        result.setAverageDistance(averageDistance);
 
         return result;
     }
