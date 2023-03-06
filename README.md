@@ -38,7 +38,7 @@ Para la ver las instrucciones de instalación del proyecto diríjase al archivo 
 
 A continuación describiremos los endpoints por medio de los cuales se pueden realizar las consultas HTTP requeridas a las distintas bases de datos:
 
-( ***Todo endpoint debe comenzar con "http://localhost:8080/accidents"*** )
+( ***Todo endpoint debe comenzar con "http://localhost:${SERVER_HOST_PORT}/accidents"*** )
 
 
 1.  > *Retornar una lista de los accidentes ocurridos entre 2 fechas dadas.*
@@ -55,7 +55,7 @@ A continuación describiremos los endpoints por medio de los cuales se pueden re
     >```
     > - **Ejemplo:**
     >
-    >   - http://localhost:8080/accidents/between-dates?start=08-02-2016&end=09-02-2016&page=2&perPage=10
+    >   - http://localhost:8081/accidents/between-dates?start=08-02-2016&end=09-02-2016&page=2&perPage=10
     > - **Output (ejemplo):**
     > ```json
     >    "paginationInfo": {
@@ -102,9 +102,9 @@ A continuación describiremos los endpoints por medio de los cuales se pueden re
     >```
     > - Ejemplos:
     >
-    >   - http://localhost:8080/accidents/near?longitude=-84.058723&latitude=39.865147&radius=10
+    >   - http://localhost:8081/accidents/near?longitude=-84.058723&latitude=39.865147&radius=10
     >
-    >   - http://localhost:8080/accidents/near2?longitude=-84.058723&latitude=39.865147&radius=10
+    >   - http://localhost:8081/accidents/near2?longitude=-84.058723&latitude=39.865147&radius=10
     >
     > - **Output (ejemplo):**
     > ```json
@@ -140,7 +140,7 @@ A continuación describiremos los endpoints por medio de los cuales se pueden re
     >```
     >- Ejemplo:
     >
-    >   - http://localhost:8080/accidents/average-distance
+    >   - http://localhost:8081/accidents/average-distance
     >
     > - **Output (ejemplo):**
     > ```json
@@ -159,7 +159,7 @@ A continuación describiremos los endpoints por medio de los cuales se pueden re
     >```
     > - Ejemplo:
     >
-    >   - http://localhost:8080/accidents/dangerous-streets
+    >   - http://localhost:8081/accidents/dangerous-streets
     >
     > - **Output (ejemplo):**
     > ```json
@@ -202,9 +202,9 @@ A continuación describiremos los endpoints por medio de los cuales se pueden re
     >```
     > - Ejemplos:
     >
-    >   - http://localhost:8080/accidents/near/average-distance?page=1&perPage=10
+    >   - http://localhost:8081/accidents/near/average-distance?page=1&perPage=10
     >
-    >   - http://localhost:8080/accidents/near/average-distance2?page=1&perPage=10
+    >   - http://localhost:8081/accidents/near/average-distance2?page=1&perPage=10
     >
     > - **Output (ejemplo):**
     > ```json
@@ -237,7 +237,7 @@ A continuación describiremos los endpoints por medio de los cuales se pueden re
     >```
     > - Ejemplo:
     >
-    >   - http://localhost:8080/accidents/getCommonConditions
+    >   - http://localhost:8081/accidents/getCommonConditions
     >
     > - **Output (ejemplo):**
     > ```json
@@ -267,7 +267,7 @@ A continuación describiremos los endpoints por medio de los cuales se pueden re
     >```
     > - **Ejemplo:**
     >
-    >     - http://localhost:8080/accidents/getMostDangerousPoints?radius=2&amount=5 
+    >     - http://localhost:8081/accidents/getMostDangerousPoints?radius=2&amount=5 
     >
     > - **Output (ejemplo)**
     > ```json

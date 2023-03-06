@@ -23,7 +23,6 @@ import ar.edu.unlp.info.bd2.promocionbd2.dto.NearAccidentsSeverityRepresentation
 import ar.edu.unlp.info.bd2.promocionbd2.dto.TotalAccidentsInLocationRepresentation;
 import ar.edu.unlp.info.bd2.promocionbd2.model.Accident;
 
-
 public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRepository {
 
     @Autowired
@@ -37,10 +36,12 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
                 .query(new Query().addCriteria(Criteria.where("ID").ne(accident.getId())));
 
         Aggregation aggregation = Aggregation.newAggregation(
-                                        Aggregation.geoNear(nearQuery,"calculatedDistance"),
-                                        Aggregation.group().avg("calculatedDistance").as("averageDistance"));              
+                Aggregation.geoNear(nearQuery, "calculatedDistance"),
+                Aggregation.group().avg("calculatedDistance").as("averageDistance"))
+                .withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
 
-        AggregationResults<NearAccidentRepresentation> results = mongoTemplate.aggregate(aggregation,"accident", NearAccidentRepresentation.class);
+        AggregationResults<NearAccidentRepresentation> results = mongoTemplate.aggregate(aggregation, "accident",
+                NearAccidentRepresentation.class);
 
         List<NearAccidentRepresentation> mappedResults = results.getMappedResults();
         NearAccidentRepresentation res;
@@ -62,7 +63,7 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
         ExecutorService executorService = Executors.newFixedThreadPool(Math.min(totalResults, 100));
 
         for (int i = 0; i < totalResults; i++) {
-            final int j = i; 
+            final int j = i;
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -74,29 +75,37 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
         }
 
         executorService.shutdown();
-        while (!executorService.isTerminated()) {}
+        while (!executorService.isTerminated()) {
+        }
 
         return result;
     }
 
     private List<TotalAccidentsInLocationRepresentation> findLocationsWithMostAccidents(int maxLocations) {
-        Aggregation aggregation = Aggregation.newAggregation(Aggregation.group("location").count().as("totalAccidentsInLocation"),
-                                                             Aggregation.sort(Sort.Direction.DESC, "totalAccidentsInLocation"),
-                                                             Aggregation.project("totalAccidentsInLocation").and("_id").as("point").andExclude("_id"),
-                                                             Aggregation.limit(maxLocations));
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.group("location").count().as("totalAccidentsInLocation"),
+                Aggregation.sort(Sort.Direction.DESC, "totalAccidentsInLocation"),
+                Aggregation.project("totalAccidentsInLocation").and("_id").as("point").andExclude("_id"),
+                Aggregation.limit(maxLocations))
+                .withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
 
-        AggregationResults<TotalAccidentsInLocationRepresentation> aggregationResults = mongoTemplate.aggregate(aggregation, "accident", TotalAccidentsInLocationRepresentation.class);
+        AggregationResults<TotalAccidentsInLocationRepresentation> aggregationResults = mongoTemplate
+                .aggregate(aggregation, "accident", TotalAccidentsInLocationRepresentation.class);
         return aggregationResults.getMappedResults();
     }
 
-    private NearAccidentsSeverityRepresentation getNearAccidentsSeverity(TotalAccidentsInLocationRepresentation point, double radius) {
+    private NearAccidentsSeverityRepresentation getNearAccidentsSeverity(TotalAccidentsInLocationRepresentation point,
+            double radius) {
         NearQuery nearQuery = NearQuery.near(point.getPoint(), Metrics.KILOMETERS).spherical(true).maxDistance(radius);
 
-        Aggregation aggregation = Aggregation.newAggregation(Aggregation.geoNear(nearQuery,"calculatedDistance"),
-                                                             Aggregation.group("$id").count().as("totalNearAccidents").sum("$Severity").as("totalSeverity"));
-        
-        AggregationResults<NearAccidentsSeverityRepresentation> aggregationResults = mongoTemplate.aggregate(aggregation, "accident", NearAccidentsSeverityRepresentation.class);
-        
+        Aggregation aggregation = Aggregation.newAggregation(Aggregation.geoNear(nearQuery, "calculatedDistance"),
+                Aggregation.group("$id").count().as("totalNearAccidents").sum("$Severity").as("totalSeverity"))
+                .withOptions(
+                        Aggregation.newAggregationOptions().allowDiskUse(true).build());
+
+        AggregationResults<NearAccidentsSeverityRepresentation> aggregationResults = mongoTemplate
+                .aggregate(aggregation, "accident", NearAccidentsSeverityRepresentation.class);
+
         NearAccidentsSeverityRepresentation result = aggregationResults.getMappedResults().get(0);
         result.setPoint(new Point(point.getPoint()));
         result.setTotalAccidentsInLocation(point.getTotalAccidentsInLocation());
@@ -109,7 +118,7 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
         int maxThreads = Math.min(amount, 100), i;
         PriorityQueue<NearAccidentsSeverityRepresentation> maxHeaps[] = new PriorityQueue[maxThreads];
         ReentrantLock lock[] = new ReentrantLock[maxThreads];
-        int totalIterations[] = {0};
+        int totalIterations[] = { 0 };
 
         for (i = 0; i < maxThreads; i++) {
             maxHeaps[i] = new PriorityQueue<>((a, b) -> {
@@ -118,8 +127,8 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
             lock[i] = new ReentrantLock();
         }
         ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
-        
-        findLocationsWithMostAccidents(amount).forEach( (TotalAccidentsInLocationRepresentation location) -> {
+
+        findLocationsWithMostAccidents(amount).forEach((TotalAccidentsInLocationRepresentation location) -> {
             int j = totalIterations[0]++ % maxThreads;
             Thread thread = new Thread(new Runnable() {
                 @Override
@@ -134,7 +143,7 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
                         lock[j].unlock();
                     }
                 }
-        
+
                 public void updateMax(NearAccidentsSeverityRepresentation nearAccidents) throws Exception {
                     int totalSeverity = nearAccidents.getTotalSeverity();
                     if (maxHeaps[j].size() == amount && totalSeverity > maxHeaps[j].peek().getTotalSeverity()) {
@@ -147,10 +156,11 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
             });
 
             executorService.execute(thread);
-        } );
+        });
 
         executorService.shutdown();
-        while (!executorService.isTerminated()) {}
+        while (!executorService.isTerminated()) {
+        }
 
         PriorityQueue<NearAccidentsSeverityRepresentation> maxHeap = new PriorityQueue<>((a, b) -> {
             return (b != null ? b.getTotalSeverity() : 0) - (a != null ? a.getTotalSeverity() : 0);
@@ -169,5 +179,5 @@ public class CustomMongoAccidentRepositoryImpl implements CustomMongoAccidentRep
 
         return result;
     }
-    
+
 }
