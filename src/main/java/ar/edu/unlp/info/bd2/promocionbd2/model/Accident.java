@@ -78,7 +78,7 @@ public class Accident {
     private Double endLng;
 
     @Column(name = "distance")
-    @Field(name = "Distance")
+    @Field(name = "Distance(mi)")
     @org.springframework.data.elasticsearch.annotations.Field(name = "distance_mi")
     private Double distance;
 
@@ -119,7 +119,7 @@ public class Accident {
     private String country;
 
     @Column(name = "timezone")
-    @Field(name = "timezone")
+    @Field(name = "Timezone")
     private String timezone;
 
     @Column(name = "airport_code")
@@ -133,26 +133,26 @@ public class Accident {
     private Date weatherTimestamp;
 
     @Column(name = "temperature")
-    @Field(name = "Temperature")
+    @Field(name = "Temperature(F)")
     @org.springframework.data.elasticsearch.annotations.Field(name = "temperature_f")
     private Double temperature;
 
     @Column(name = "wind_chill")
-    @Field(name = "Wind_Chill")
+    @Field(name = "Wind_Chill(F)")
     @org.springframework.data.elasticsearch.annotations.Field(name = "wind_chill_f")
     private Double windChill;
 
     @Column(name = "humidity")
-    @Field(name = "Humidity")
+    @Field(name = "Humidity(%)")
     private Double humidity;
 
     @Column(name = "pressure")
-    @Field(name = "Pressure")
+    @Field(name = "Pressure(in)")
     @org.springframework.data.elasticsearch.annotations.Field(name = "pressure_in")
     private Double pressure;
 
     @Column(name = "visibility")
-    @Field(name = "Visibility")
+    @Field(name = "Visibility(mi)")
     @org.springframework.data.elasticsearch.annotations.Field(name = "visibility_mi")
     private Double visibility;
 
@@ -162,12 +162,12 @@ public class Accident {
     private String windDirection;
 
     @Column(name = "wind_speed")
-    @Field(name = "Wind_Speed")
+    @Field(name = "Wind_Speed(mph)")
     @org.springframework.data.elasticsearch.annotations.Field(name = "wind_speed_mph")
     private Double windSpeed;
 
     @Column(name = "precipitation")
-    @Field(name = "Precipitation")
+    @Field(name = "Precipitation(in)")
     @org.springframework.data.elasticsearch.annotations.Field(name = "precipitation_in")
     private Double precipitation;
 
