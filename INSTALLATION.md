@@ -143,7 +143,3 @@ docker-compose up -d logstash
 1. Mantener los contenedores levantados, o levantarlos en caso de que esten detenidos.
 
 2. Cargar las bases de datos manualmente como se describe en el [punto 3](#3-cargar-base-de-datos-manualmente).
-
-```
-
-```
