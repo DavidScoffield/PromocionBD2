@@ -257,8 +257,8 @@ A continuación describiremos los endpoints por medio de los cuales se pueden re
 
 - **Nombre del endpoint:** 
 
-    - */average-distance* (MongoDB) 
-    - */average-distance2* (Elasticsearch)
+    - */near/average-distance* (MongoDB) 
+    - */near/average-distance2* (Elasticsearch)
 
 - **Parámetros:**
 
