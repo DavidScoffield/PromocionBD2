@@ -3,8 +3,8 @@
 Integrantes del grupo:
 
 - Giorgetti Valentín (17133/2)
-- Scoffield David
-- Suelgaray Franco
+- Scoffield David (17282/5)
+- Suelgaray Franco (17274/5)
 
 ---
 
@@ -32,7 +32,7 @@ Cuando nos encontramos frente a pequeñas colecciones de datos, sobre las que de
 
 A su vez, cuando realizamos búsquedas sobre grandes volúmenes de datos, los tiempos de ejecución de las consultas tienden a crecer considerablemente. Tanto es así que debemos optimizar las consultas y seleccionar el motor que maximice la performance. 
 
-El presente trabajo trata acerca de un análisis y comparación entre diversas búsquedas que se realizan sobre un mismo dataset de accidentes que contiene 3 millones de datos. Éstas se efectúan, según la naturaleza de la consulta, sobre distintos motores de bases de datos, incluyendo PostgreSQL, MongoDB y Elasticsearch. El trabajo se desarrolla utilizando de una API REST construida sobre Spring Boot (Java) con endpoints que ejecutan las siguientes consultas:
+El presente trabajo trata acerca de un análisis y comparación entre diversas búsquedas que se realizan sobre un mismo dataset de accidentes que contiene 3 millones de datos. Éstas se efectúan, según la naturaleza de la consulta, sobre distintos motores de bases de datos, incluyendo PostgreSQL, MongoDB y Elasticsearch. El trabajo se desarrolla utilizando una API REST construida sobre Spring Boot (Java) con endpoints que ejecutan las siguientes consultas:
 
     1. Devolver todos los accidentes ocurridos entre 2 fechas dadas
 
