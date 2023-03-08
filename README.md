@@ -358,7 +358,7 @@ Por otra parte, destacamos que cuanto mayor es el tamaño de la página, peor re
 
 La razón por la que realizamos el análisis sobre un subconjunto de sólo 10 mil registros es debida al límite que nos presenta Elasticsearch al paginar los resultados. El parámetro que controla esta propiedad es *"max_result_window"* y está seteado a 10000.
 
-A pesar de ello, decidimos hacer la comparación entre los motores de bases de datos para obtener una vista general de cómo se comportan sobre una coleccion de datos pequeña. Probablemente estos valores no se repliquen sobre conjuntos mucho más grandes de datos, sino que podrían fluctuar luego cierto umbral, o hasta podría ser Elasticsearch el motor más apto para resolver consultas grandes.
+A pesar de ello, decidimos hacer la comparación entre los motores de bases de datos para obtener una vista general de cómo se comportan sobre una coleccion de datos pequeña. Probablemente estos valores no se repliquen sobre conjuntos mucho más grandes de datos, sino que podrían fluctuar luego de cierto umbral, o hasta podría ser Elasticsearch el motor más apto para resolver consultas grandes.
 
 <br></br>
 
